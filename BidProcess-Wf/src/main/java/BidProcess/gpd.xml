@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root-container name="BidProcess" width="694" height="454">
+  <node name="Start" x="150" y="28" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="Review" x="150" y="130" width="132" height="36"/>
+</root-container>
