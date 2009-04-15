@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2"
+	name="BidProcess">
+
+	<!-- Who are the initiatior of the process? -->
+	<swimlane name="authors">
+		<assignment class="org.alfresco.repo.workflow.jbpm.AlfrescoAssignment">
+			<actor>#{bpm_assignee}</actor>
+		</assignment>
+	</swimlane>
+
+
+	<start-state name="Start">
+		<description>
+			This is the start Node
+		</description>
+		
+		<!-- The transition to the next node. The transition is done automatically when 
+		user drops the document into a space -->
+		<transition to="Review">
+			<action class="org.alfresco.repo.workflow.jbpm.AlfrescoJavaScript">
+				<script>
+					<!--
+						Run a script to: Check the type of content (bid) Apply template,
+						add generated ID based on version, project name and WBS Code, and
+						transform to PDF and put in another space Read from somewhere the
+						mandatory and optional reviewers Send an email to each mandatory
+						revieweres with a link to the content (pdf) -> Apply email
+						template Send and email to each optional reviewer with a link to
+						content (pdf) -> Apply email template
+					-->
+				</script>
+			</action>
+
+		</transition>
+		
+	</start-state>
+
+
+	<task-node name="Review">
+		<description>
+			After complete the Bid document, send it to Review
+		</description>
+	</task-node>
+
+
+</process-definition>
