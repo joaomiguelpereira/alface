@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<project name="nIdeaSystems - Custom Login Build File" default="package-extension" basedir=".">
+
+
+	<property name="project.dir" value="." />
+	<property name="build.dir" value="${project.dir}/build" />
+	<property name="web.dir" value="${project.dir}/web" />
+	<property name="package.file.jar" value="${build.dir}/custom-login.jar" />
+	<property name="package.file.zip" value="${build.dir}/custom-login.zip" />
+
+	<!-- Start Changes-->
+
+	
+	
+	<!-- Where are the javascripts within the WAR? -->
+	<property name="tomcat.alfresco.dir" value="F:/alfresco-community-tomcat-2.9.0B/tomcat/webapps/alfresco" />
+	
+	<!-- Where are the javascripts within the WAR? -->
+	<property name="scripts.dir" value="scripts" />
+	<!-- Change these configurations. Move them to a local props file-->
+	<property name="war.dir" value="F:/alfresco-community-tomcat-2.9.0B/tomcat/webapps" />
+	<!-- Change these configurations. Move them to a global props file-->
+	<property name="dojo.scripts.dir" value="../../src/dojo-release-1.3.0" />
+	<!-- End Changes-->
+
+
+
+	<path id="class.path">
+		<dirset dir="${build.dir}" />
+		<fileset dir="../../lib/server" includes="**/*.jar" />
+	</path>
+
+	<target name="compile">
+		<mkdir dir="${build.dir}" />
+		<javac classpathref="class.path" srcdir="${project.dir}/source" destdir="${build.dir}" />
+	</target>
+
+	<!-- Start Changes-->
+
+	<!-- Copy JSPs and Statics into tomcat directly. Avoid to redeploy grrr-->
+	<target name="hotdeploy.jsp" depends="package-extension">
+		<copydir dest="${tomcat.alfresco.dir}" src="${web.dir}">
+		</copydir>
+	</target>
+	<!-- End Changes-->
+	<!-- Copy Javascripts into web dir-->
+
+	<target name="copy.javascrip">
+		
+		<copydir dest="${web.dir}/${scripts.dir}/nidea" src="${dojo.scripts.dir}">
+		</copydir>
+	</target>
+	<!-- End Changes-->
+
+	<target name="package-jar">
+		<delete file="${package.file.jar}" />
+		<jar destfile="${package.file.jar}">
+			<fileset dir="${build.dir}" excludes="*.zip" />
+		</jar>
+	</target>
+
+	<target name="package-extension" depends="package-jar,copy.javascrip">
+		<delete file="${package.file.zip}" />
+		<zip destfile="${package.file.zip}">
+			<zipfileset file="${package.file.jar}" prefix="WEB-INF/lib" />
+			<zipfileset dir="${web.dir}" />
+		</zip>
+	</target>
+
+	<target name="integrate-extension" depends="package-extension">
+		<!-- <available file="${war.dir}/alfresco.war" type="file" property="alfresco.war.present" />
+      <fail unless="alfresco.war.present"
+            message="Could not find alfresco.war, please copy it to ${basedir}" />-->
+
+		<zip destfile="${war.dir}/alfresco.war" update="true">
+			<zipfileset file="${package.file.jar}" prefix="WEB-INF/lib" />
+			<zipfileset dir="${web.dir}" />
+		</zip>
+	</target>
+
+</project>
