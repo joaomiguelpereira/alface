@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="wf:simple" width="628" height="445">
+<root-container name="wf:simplewf" width="611" height="379">
   <node name="start" x="19" y="31" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
