@@ -14,13 +14,13 @@ What you'll need: (TODO: Add links)
 Assumptions:
    * You have Alfresco Labs 3.0 configured and running.
    
-=== First steps===
+== First steps==
 
 Checkout the folder scrumr from SVN (http://code.google.com/p/alface/source/checkout) to your local disk. 
 
 == WebClient ==
 
-   * go to the <SCRUM_HOME>/webclient, where SCRUM_HOME is where you have your working copy of the project
+   * go to the SCRUM_HOME/webclient, where SCRUM_HOME is where you have your working copy of the project
    * run the command to check if everything is ok:
 {{{
 mvn compile
@@ -32,14 +32,14 @@ mvn compile
 {{{
 mvn gwt:eclipse
 }}}
-   * In eclipse import-> Existing Projects into Workspace -> Select the folder <SCRUM_HOME>/webclient
+   * In eclipse import-> Existing Projects into Workspace -> Select the folder SCRUM_HOME/webclient
    * Locate the file org.nideasystems.scrumr.webclient.Application.launch
    * Right click and Run as...
 
 if you don't see the GWT shell, or if the shell is empty, something is wrong :)
 
-=== Restlayer ===
-   * go to <SCRUM_HOME>/restlayer
+== Restlayer ==
+   * go to SCRUM_HOME/restlayer
    * run the following command to test if everything is ok:
 {{{
 mvn jetty:run
@@ -55,7 +55,7 @@ If everything it's ok you should a string in your browser
    * To generate the eclipse project, run the following command:
 {{{
 mvn eclipse:eclipse
-}}
+}}}
    * Follow the same steps describe above fro webclient
    * Locate the Class org.nideasystems.scrumr.restlayer.Server
    * Right click and Run as... Java application
