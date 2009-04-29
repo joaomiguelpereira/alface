@@ -26,7 +26,8 @@ Checkout the folder scrumr from SVN (http://code.google.com/p/alface/source/chec
 mvn compile
 }}} 
    * run the following commands if you wish to generate and eclipse project
-{{{ mvn eclipse:eclipse
+{{{ 
+mvn eclipse:eclipse
 }}}
    * Run the following command to create a lunch configuration so you can run the GWT shel from eclipse:
 {{{
