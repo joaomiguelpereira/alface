@@ -30,6 +30,6 @@ We can't say now if REST architectures are better that the n-tier architectures,
 
 ==Technology goal===
 
-Research and develop software technology that can be used in the context of enterprise and critical-mission applications.
+Research and develop new software technology that can be used in the context of enterprise and critical-mission applications.
 
 ---PROVIDE MORE DETAILS---
