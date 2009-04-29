@@ -20,8 +20,7 @@ For the REST we will frame our work around Fielding's Dissertation, chapter 5 - 
 
 We will play around with restlet (http://www.restlet.org/), GWT (http://code.google.com/webtoolkit/), Alfresco (http://www.alfresco.org), Jetty, Maven and more you would like to. We can even have a more functional REST framework developed in scala :)
 
-And to eat our own dog food, we will build a WEB 2.0 Application to *really* help scrum enabled organizations.
-
+And to eat our own dog food, we will build a WEB 2.0 Application to *really* help scrum enabled organizations. This application that will provides us with the insights and knowledge about new software paradigms. This new knowledge can be applied to the business, of course. 
 
 = Details =
 
@@ -29,5 +28,8 @@ This will be a challenge to some of you (me included) that are used to the tradi
 
 We can't say now if REST architectures are better that the n-tier architectures, or if they are even suitable for enterprise applications, however we will find out with research and experimentations.  
 
+==Technology goal===
+
+Research and develop software technology that can be used in the context of enterprise and critical-mission applications.
 
 ---PROVIDE MORE DETAILS---
