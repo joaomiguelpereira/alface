@@ -13,11 +13,12 @@
   <properties>
 
       <!-- convenience to define GWT version in one place -->
-      <gwt.version>1.6.4</gwt.version>
+      <!--  <gwt.version>1.6.4</gwt.version> Move to parent-->
 
       <!--  tell the compiler we can use 1.5 -->
-      <maven.compiler.source>1.5</maven.compiler.source>
-      <maven.compiler.target>1.5</maven.compiler.target>
+      
+      <!-- <maven.compiler.source>1.5</maven.compiler.source>  -->
+      <!--  <maven.compiler.target>1.5</maven.compiler.target> -->
 
   </properties>
 
