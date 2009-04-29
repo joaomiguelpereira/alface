@@ -1,24 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.nideasystems.scrumr.restlayer</groupId>
-	<artifactId>restlayer</artifactId>
+	<parent>
+		<groupId>org.nideasystems.scrumr</groupId>
+		<artifactId>org.nideasystems.scrumr.parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	
+	<!--  <groupId>org.nideasystems.scrumr.restlayer</groupId>-->
+	<!--  <artifactId>restlayer</artifactId>-->
+	<artifactId>org.nideasystems.scrumr.restlayer</artifactId>
 	<packaging>war</packaging>
 	<version>0.1-SNAPSHOT</version>
-	<name>restlayer Maven Webapp</name>
-	<url>http://maven.apache.org</url>
+	<name>scrumr.restlayer</name>
+
+
 	<properties>
 		<jetty.port>8082</jetty.port>
 		<restlet.version>1.2-SNAPSHOT</restlet.version>
 
 	</properties>
-	<!--  <repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories> -->
+	<!--
+		<repositories> <repository> <id>maven-restlet</id> <name>Public online
+		Restlet repository</name> <url>http://maven.restlet.org</url>
+		</repository> </repositories>
+	-->
 	<dependencies>
 
 		<dependency>
