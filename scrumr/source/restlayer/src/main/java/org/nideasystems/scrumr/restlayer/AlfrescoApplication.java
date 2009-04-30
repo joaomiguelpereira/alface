@@ -22,7 +22,7 @@ public class AlfrescoApplication extends Application {
 		@Override
 		protected IFacadeManager initialValue() {
 			IFacadeManager facadeMgr = new BasicFacadeManagerImpl();
-			
+			facadeMgr.setConfiguration(getConfiguration());
 			return facadeMgr;
 		};
 	};
@@ -30,12 +30,6 @@ public class AlfrescoApplication extends Application {
 	
 	
 	public IFacadeManager getFacadeManager() {
-		IFacadeManager instance = facadeManager.get();
-		//Set the current context
-		instance.setContext(getContext());
-		//set the current configuration
-		instance.setConfiguration(getConfiguration());
-		
 		return facadeManager.get();
 	}
 
