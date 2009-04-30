@@ -1,7 +1,7 @@
 package org.nideasystems.scrumr.restlayer.facades;
 
 import org.nideasystems.scrumr.restlayer.ApplicationConfiguration;
-import org.restlet.Context;
+//import org.restlet.Context;
 
 public interface IFacadeManager {
 
@@ -18,7 +18,7 @@ public interface IFacadeManager {
 	 * Set the Restlet Context
 	 * @param context
 	 */
-	public void setContext(Context context);
+	
 
 	public void setConfiguration(ApplicationConfiguration configuration);
 	public ApplicationConfiguration getConfiguration();
