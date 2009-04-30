@@ -21,8 +21,9 @@ public class AlfrescoUserFacadeRestImpl extends AbstractAlfrescoFacade implement
 
 	
 	private static final Logger log = Logger.getLogger(AlfrescoUserFacadeRestImpl.class.getName());
-	public AlfrescoUserFacadeRestImpl(Context context, ApplicationConfiguration applicationConfiguration) {
-		super(context,applicationConfiguration);
+	
+	public AlfrescoUserFacadeRestImpl(ApplicationConfiguration applicationConfiguration) {
+		super(applicationConfiguration);
 
 	}
 
