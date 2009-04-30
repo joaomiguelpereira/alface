@@ -7,7 +7,7 @@
 		<artifactId>org.nideasystems.scrumr.parent</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<!--  <groupId>org.nideasystems.scrumr.restlayer</groupId>-->
 	<!--  <artifactId>restlayer</artifactId>-->
 	<artifactId>org.nideasystems.scrumr.restlayer</artifactId>
@@ -64,6 +64,13 @@
 			<artifactId>org.json</artifactId>
 			<version>2.0</version>
 		</dependency>
+
+
+		<!-- <dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.ext.spring</artifactId>
+			<version>${restlet.version}</version>
+		</dependency>  -->
 
 
 		<!-- End Restlet -->
