@@ -2,8 +2,10 @@ package org.nideasystems.scrumr.restlayer;
 
 
 import org.apache.log4j.Logger;
-import org.nideasystems.scrumr.restlayer.facades.BasicFacadeManagerImpl;
-import org.nideasystems.scrumr.restlayer.facades.IFacadeManager;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoConfiguration;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoFacadeManagerInitializationException;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.BasicAlfrescoFacadeManagerImpl;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoFacadeManager;
 import org.nideasystems.scrumr.restlayer.resources.AuthenticationTokenResource;
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -13,23 +15,28 @@ import org.restlet.routing.Router;
 
 public class AlfrescoApplication extends Application {
 	
-	private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+	private final AlfrescoConfiguration applicationConfiguration = new AlfrescoConfiguration();
 	
 	private static final Logger log = Logger.getLogger(AlfrescoApplication.class.getName());
 
-	private ThreadLocal<IFacadeManager> facadeManager = new ThreadLocal<IFacadeManager>() {
+	private ThreadLocal<IAlfrescoFacadeManager> facadeManager = new ThreadLocal<IAlfrescoFacadeManager>() {
 	
 		@Override
-		protected IFacadeManager initialValue() {
-			IFacadeManager facadeMgr = new BasicFacadeManagerImpl();
-			facadeMgr.setConfiguration(getConfiguration());
+		protected IAlfrescoFacadeManager initialValue() {
+			IAlfrescoFacadeManager facadeMgr = new BasicAlfrescoFacadeManagerImpl();
+			try {
+				facadeMgr.init();
+			} catch (AlfrescoFacadeManagerInitializationException e) {
+				log.fatal("Error while initilizing AlfrescofacadeManager:",e);
+				throw new RuntimeException(e);
+			}
 			return facadeMgr;
 		};
 	};
 
 	
 	
-	public IFacadeManager getFacadeManager() {
+	public IAlfrescoFacadeManager getFacadeManager() {
 		return facadeManager.get();
 	}
 
@@ -37,7 +44,7 @@ public class AlfrescoApplication extends Application {
 	public synchronized void start() throws Exception {
 		super.start();
 		log.debug("Starting...");
-		this.applicationConfiguration.read();
+		
 		
 		
 		
@@ -49,7 +56,7 @@ public class AlfrescoApplication extends Application {
 		super.stop();
 	}
 
-	public ApplicationConfiguration getConfiguration() {
+	public AlfrescoConfiguration getConfiguration() {
 		return this.applicationConfiguration;
 	}
 	@Override
