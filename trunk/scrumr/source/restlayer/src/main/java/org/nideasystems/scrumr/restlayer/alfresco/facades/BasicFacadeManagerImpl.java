@@ -3,6 +3,7 @@ package org.nideasystems.scrumr.restlayer.alfresco.facades;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.nideasystems.scrumr.restlayer.alfresco.facades.impl.AlfrescoUserFacadeRestImpl;
 
 /**
@@ -10,14 +11,24 @@ import org.nideasystems.scrumr.restlayer.alfresco.facades.impl.AlfrescoUserFacad
  * @author jpereira
  *
  */
-public class BasicFacadeManagerImpl implements IFacadeManager {
+public class BasicFacadeManagerImpl implements IAlfrescoFacadeManager {
 
 	Map<Class<?>, IAlfrescoFacade> facades = new HashMap<Class<?>, IAlfrescoFacade>();
 	
-	private ApplicationConfiguration configuration;
+	private final AlfrescoConfiguration configuration = new AlfrescoConfiguration();;
 	
 	public BasicFacadeManagerImpl() {
 		
+	}
+	
+	public void init() throws AlfrescoFacadeManagerInitializationException{
+		try {
+			this.configuration.read();
+		} catch (ConfigurationException e) {
+			
+			throw new AlfrescoFacadeManagerInitializationException(e);
+			
+		}
 	}
 
 
@@ -35,13 +46,8 @@ public class BasicFacadeManagerImpl implements IFacadeManager {
 	}
 
 
-	public void setConfiguration(ApplicationConfiguration configuration) {
-		this.configuration = configuration;
-		
-	}
 
-
-	public ApplicationConfiguration getConfiguration() {
+	public AlfrescoConfiguration getConfiguration() {
 		return this.configuration;
 	}
 
