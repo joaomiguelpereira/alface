@@ -2,7 +2,7 @@ package org.nideasystems.scrumr.restlayer;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
-import org.nideasystems.scrumr.restlayer.facades.IAlfrescoUserFacade;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoUserFacade;
 import org.restlet.Context;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Request;
