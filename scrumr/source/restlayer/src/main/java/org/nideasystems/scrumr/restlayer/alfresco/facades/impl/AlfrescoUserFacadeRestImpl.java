@@ -1,14 +1,14 @@
-package org.nideasystems.scrumr.restlayer.facades.rest;
+package org.nideasystems.scrumr.restlayer.alfresco.facades.impl;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nideasystems.scrumr.restlayer.ApplicationConfiguration;
-import org.nideasystems.scrumr.restlayer.facades.AbstractAlfrescoFacade;
-import org.nideasystems.scrumr.restlayer.facades.IAlfrescoUserFacade;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoConfiguration;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.AbstractAlfrescoFacade;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoUserFacade;
 
 import org.restlet.Client;
-import org.restlet.Context;
+
 
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
@@ -17,12 +17,18 @@ import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 
+/**
+ * 
+ * @author jpereira
+ *
+ */
 public class AlfrescoUserFacadeRestImpl extends AbstractAlfrescoFacade implements IAlfrescoUserFacade {
 
 	
 	private static final Logger log = Logger.getLogger(AlfrescoUserFacadeRestImpl.class.getName());
-	public AlfrescoUserFacadeRestImpl(Context context, ApplicationConfiguration applicationConfiguration) {
-		super(context,applicationConfiguration);
+	
+	public AlfrescoUserFacadeRestImpl(AlfrescoConfiguration applicationConfiguration) {
+		super(applicationConfiguration);
 
 	}
 
