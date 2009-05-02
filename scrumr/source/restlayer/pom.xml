@@ -66,11 +66,11 @@
 		</dependency>
 
 
-		<!-- <dependency>
-			<groupId>org.restlet</groupId>
+		<!--
+			<dependency> <groupId>org.restlet</groupId>
 			<artifactId>org.restlet.ext.spring</artifactId>
-			<version>${restlet.version}</version>
-		</dependency>  -->
+			<version>${restlet.version}</version> </dependency>
+		-->
 
 
 		<!-- End Restlet -->
@@ -84,7 +84,11 @@
 			<version>1.2.9</version>
 		</dependency>
 
-
+		<!--
+			<dependency> <groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId> <version>2.5.6</version>
+			</dependency>
+		-->
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
