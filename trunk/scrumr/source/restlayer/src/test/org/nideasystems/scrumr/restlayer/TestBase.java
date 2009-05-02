@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Ignore;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
-import org.nideasystems.scrumr.restlayer.facades.IFacadeManager;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoFacadeManager;
 import org.restlet.Component;
 
 import org.restlet.data.Protocol;
@@ -15,7 +15,7 @@ public class TestBase extends TestCase{
 	protected Integer serverPort = 8182;
 	protected String serviceUrl = "http://localhost:" + serverPort + "/service";
 	private Component component = null;
-	protected IFacadeManager facadeManager;
+	protected IAlfrescoFacadeManager facadeManager;
 
 	@Ignore
 	protected void setUp() {
