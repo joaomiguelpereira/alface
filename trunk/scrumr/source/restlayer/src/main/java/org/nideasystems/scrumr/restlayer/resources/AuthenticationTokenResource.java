@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
-import org.nideasystems.scrumr.restlayer.facades.IFacadeManager;
+
 import org.nideasystems.scrumr.restlayer.utils.UrlParams;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
