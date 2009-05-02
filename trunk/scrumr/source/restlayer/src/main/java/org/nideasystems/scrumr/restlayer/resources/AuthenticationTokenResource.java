@@ -38,10 +38,11 @@ public class AuthenticationTokenResource extends BaseResource {
 
 	@Get("html")
 	public Representation authenticate() {
-		AlfrescoApplication app = getAlfrescoApplication();
-		IFacadeManager facadeMgr = app.getFacadeManager();
-		facadeMgr.getUserFacade().getAuthorizationTicket(this.username, this.password);
 		
+//		AlfrescoApplication app = getAlfrescoApplication();
+//		IFacadeManager facadeMgr = app.getFacadeManager();
+//		facadeMgr.getUserFacade().getAuthorizationTicket(this.username, this.password);
+//		
 		
 		/*
 		JSONObject jsonObject = null;
