@@ -3,14 +3,14 @@ package org.nideasystems.scrumr.restlayer.alfresco.facades;
 
 public abstract class AbstractAlfrescoFacade {
 	
-	private ApplicationConfiguration configuration;
+	private AlfrescoConfiguration configuration;
 
-	public AbstractAlfrescoFacade(ApplicationConfiguration applicationConfiguration) {
+	public AbstractAlfrescoFacade(AlfrescoConfiguration applicationConfiguration) {
 		
 		this.configuration = applicationConfiguration;
 	}
 
-	protected ApplicationConfiguration getConfiguration() {
+	protected AlfrescoConfiguration getConfiguration() {
 		return this.configuration;
 	}
 	
