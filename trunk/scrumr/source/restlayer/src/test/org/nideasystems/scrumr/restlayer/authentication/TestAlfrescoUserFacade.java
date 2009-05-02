@@ -5,7 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.nideasystems.scrumr.restlayer.TestBase;
-import org.nideasystems.scrumr.restlayer.facades.IAlfrescoUserFacade;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoUserFacade;
 import org.restlet.data.Protocol;
 
 public class TestAlfrescoUserFacade extends TestBase{
