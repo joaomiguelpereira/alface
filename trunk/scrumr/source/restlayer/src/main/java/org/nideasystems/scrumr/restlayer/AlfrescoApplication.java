@@ -4,7 +4,7 @@ package org.nideasystems.scrumr.restlayer;
 import org.apache.log4j.Logger;
 import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoConfiguration;
 import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoFacadeManagerInitializationException;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.BasicAlfrescoFacadeManagerImpl;
+import org.nideasystems.scrumr.restlayer.alfresco.facades.BasicFacadeManagerImpl;
 import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoFacadeManager;
 import org.nideasystems.scrumr.restlayer.resources.AuthenticationTokenResource;
 import org.restlet.Application;
@@ -23,7 +23,7 @@ public class AlfrescoApplication extends Application {
 	
 		@Override
 		protected IAlfrescoFacadeManager initialValue() {
-			IAlfrescoFacadeManager facadeMgr = new BasicAlfrescoFacadeManagerImpl();
+			IAlfrescoFacadeManager facadeMgr = new BasicFacadeManagerImpl();
 			try {
 				facadeMgr.init();
 			} catch (AlfrescoFacadeManagerInitializationException e) {
