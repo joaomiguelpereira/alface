@@ -12,8 +12,11 @@ import org.restlet.Restlet;
 
 import org.restlet.data.ChallengeScheme;
 import org.restlet.routing.Router;
+import org.restlet.security.ChallengeGuard;
 
 public class AlfrescoApplication extends Application {
+	
+	private final static String REALM = "AlfrescoApplication";
 	
 	private final AlfrescoConfiguration applicationConfiguration = new AlfrescoConfiguration();
 	
@@ -63,9 +66,15 @@ public class AlfrescoApplication extends Application {
 	public synchronized Restlet createRoot() {
 		// Create a router Restlet that routes each call to a
 
-		ApplicationGuard guard = new ApplicationGuard(getContext(),
-				ChallengeScheme.HTTP_BASIC, "restLetApp");
+		//ChallengeGuard guard =  new ChallengeGuard(getContext(), ChallengeScheme.HTTP_COOKIE,REALM);
 		
+		ApplicationAuthenticator guard = new ApplicationAuthenticator(getContext(),true,ChallengeScheme.HTTP_COOKIE,REALM);
+		
+		//guard.setAuthenticator(new ApplicationAuthenticator(getContext()));
+		
+//		ApplicationGuard guard = new ApplicationGuard(getContext(),
+//				ChallengeScheme.HTTP_BASIC, "restLetApp");
+//		
 		guard.setNext(AuthenticationTokenResource.class);
 
 		Router authenticationRouter = new Router(getContext());
