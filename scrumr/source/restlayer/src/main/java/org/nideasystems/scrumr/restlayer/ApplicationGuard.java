@@ -7,9 +7,10 @@ import org.restlet.Context;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Request;
 
+import org.restlet.security.ChallengeGuard;
 import org.restlet.security.Guard;
 
-public class ApplicationGuard extends Guard {
+public class ApplicationGuard extends ChallengeGuard {
 
 	private static final Logger log = Logger.getLogger(ApplicationGuard.class
 			.getName());
@@ -19,6 +20,7 @@ public class ApplicationGuard extends Guard {
 		super(context, scheme, realm);
 
 	}
+	
 
 	@Override
 	public boolean checkSecret(Request request, String identifier, char[] secret) {
