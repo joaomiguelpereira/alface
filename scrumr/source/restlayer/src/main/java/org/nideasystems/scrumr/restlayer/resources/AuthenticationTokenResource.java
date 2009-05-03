@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
 
 import org.nideasystems.scrumr.restlayer.utils.UrlParams;
+import org.restlet.data.ClientInfo;
+import org.restlet.data.Request;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
@@ -54,7 +56,13 @@ public class AuthenticationTokenResource extends BaseResource {
 		}
 		Representation json = new JsonRepresentation(jsonObject);
 		*/
-		Representation text = new StringRepresentation("testess");
+		Representation text = null;
+		if ( getClientInfo().isAuthenticated() ) {
+			text = new StringRepresentation("Authenticated");
+		} else {
+			text = new StringRepresentation("Not aithe");
+		}
+		
 		return text;
 
 	}
