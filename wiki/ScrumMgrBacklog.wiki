@@ -1,15 +1,17 @@
- - Product backlog
- - Sprint builder
- - Sprint backlog
- - Sprints history
- - Product backlog burndown chart
- - Sprint burndown chart
- - Scrum teams list and details
- - Scrum team builder
- - Scrum team details
- - Scrum team member details
- - Associate sprint task to team member
- - Update product backlog tasks status
- - Update sprint task status
- - "Confesionário" Area where people say what they need, what is blocking them, etc.
- - Retrospective Area
+=SrumManager=
+ ==Product Backlog==
+ * Product backlog
+ * Sprint builder
+ * Sprint backlog
+ * Sprints history
+ * Product backlog burndown chart
+ * Sprint burndown chart
+ * Scrum teams list and details
+ * Scrum team builder
+ * Scrum team details
+ * Scrum team member details
+ * Associate sprint task to team member
+ * Update product backlog tasks status
+ * Update sprint task status
+ * "Confesionário" Area where people say what they need, what is blocking them, etc.
+ * Retrospective Area
