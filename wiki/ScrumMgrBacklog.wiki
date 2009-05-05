@@ -5,7 +5,10 @@
  * Sprint backlog
  * Sprints history
  * Product backlog burndown chart
+ * Product burnup chart
  * Sprint burndown chart
+ * Sprint burnup chart
+ * Velocity charts
  * Scrum teams list and details
  * Scrum team builder
  * Scrum team details
