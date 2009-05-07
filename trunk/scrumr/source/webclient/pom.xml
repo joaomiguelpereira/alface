@@ -57,13 +57,21 @@
 			<groupId>com.gwtext</groupId>
 			<artifactId>gwtext</artifactId>
 			<version>2.0.5</version>
-			<scope>test</scope>
+			<scope>provided</scope>
+		</dependency>
+		<!-- This a patched Restlet GWT API TODO: Applu patch in trunk -->
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.gwt</artifactId>
+			<version>1.2-SNAPSHOT-LOCAL-BUILD</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
 
 	<build>
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -78,6 +86,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<runTarget>org.nideasystems.scrumr.webclient.Application/Application.html</runTarget>
+				</configuration>
 			</plugin>
 			<!--
 				If you want to use the target/web.xml file mergewebxml produces,
@@ -95,6 +106,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
+				
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 				</configuration>
