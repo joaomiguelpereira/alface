@@ -10,6 +10,10 @@ import org.restlet.data.Request;
 import org.restlet.security.ChallengeGuard;
 import org.restlet.security.Guard;
 
+/**
+ * @deprecated
+ */
+
 public class ApplicationGuard extends ChallengeGuard {
 
 	private static final Logger log = Logger.getLogger(ApplicationGuard.class
@@ -21,36 +25,36 @@ public class ApplicationGuard extends ChallengeGuard {
 
 	}
 	
-
-	@Override
-	public boolean checkSecret(Request request, String identifier, char[] secret) {
-
-		boolean authenticated = false;
-		IAlfrescoUserFacade alfUserFacade = ((AlfrescoApplication)getApplication()).getFacadeManager().getUserFacade();
-		 
-		getLogger()
-				.fine(
-						"checkSecret(Request request, String identifier, char[] secret)");
-		getLogger().fine(
-				"Challenge Identifier:"
-						+ request.getChallengeResponse().getIdentifier());
-		getLogger().fine("Challenge Credentials:" + new String(secret));
-
-		
-		try {
-			authenticated = alfUserFacade.authenticate(request.getChallengeResponse().getIdentifier(), getSecretAsString(secret),request.getProtocol());
-		} catch (JSONException e) {
-			log.fatal("Could not construct the Json?",e);
-		}
-		return authenticated;
-		
-		
-		
-		// Get the remaining part key/val pairs
-
-		
-		// return super.checkSecret(request, identifier, secret);
-	}
+//
+//	@Override
+//	public boolean checkSecret(Request request, String identifier, char[] secret) {
+//
+//		boolean authenticated = false;
+//		IAlfrescoUserFacade alfUserFacade = ((AlfrescoApplication)getApplication()).getFacadeManager().getUserFacade();
+//		 
+//		getLogger()
+//				.fine(
+//						"checkSecret(Request request, String identifier, char[] secret)");
+//		getLogger().fine(
+//				"Challenge Identifier:"
+//						+ request.getChallengeResponse().getIdentifier());
+//		getLogger().fine("Challenge Credentials:" + new String(secret));
+//
+//		
+//		try {
+//			authenticated = alfUserFacade.authenticate(request.getChallengeResponse().getIdentifier(), getSecretAsString(secret),request.getProtocol());
+//		} catch (JSONException e) {
+//			log.fatal("Could not construct the Json?",e);
+//		}
+//		return authenticated;
+//		
+//		
+//		
+//		// Get the remaining part key/val pairs
+//
+//		
+//		// return super.checkSecret(request, identifier, secret);
+//	}
 	
 	private String getSecretAsString(char[] secret) {
 		StringBuffer sb = new StringBuffer();
