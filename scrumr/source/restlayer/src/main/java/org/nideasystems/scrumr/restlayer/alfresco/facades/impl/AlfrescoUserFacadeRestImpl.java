@@ -16,6 +16,7 @@ import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.resource.ResourceException;
 
 /**
  * 
@@ -23,7 +24,8 @@ import org.restlet.representation.Representation;
  *
  */
 public class AlfrescoUserFacadeRestImpl extends AbstractAlfrescoFacade implements IAlfrescoUserFacade {
-
+	
+	private String alfrescoTicket = null;
 	
 	private static final Logger log = Logger.getLogger(AlfrescoUserFacadeRestImpl.class.getName());
 	
@@ -41,10 +43,7 @@ public class AlfrescoUserFacadeRestImpl extends AbstractAlfrescoFacade implement
 
 
 
-	public String getAuthorizationTicket(String userName, String password) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 
 
@@ -59,29 +58,53 @@ public class AlfrescoUserFacadeRestImpl extends AbstractAlfrescoFacade implement
 	
 
 	public boolean authenticate(String identifier, String secretAsString,
-			Protocol protocol) throws JSONException {
+			Protocol protocol) throws AlfrescoUserFacadeException {
 		
 		boolean retVal = false;
 		Client client = new Client(protocol);
+		
 		JSONObject jsonObject = new JSONObject();
 		
-		jsonObject.put("username", identifier);
-		jsonObject.put("password", secretAsString);
+		try {
+			jsonObject.put("username", identifier);
+			jsonObject.put("password", secretAsString);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			log.fatal("error creating JSON Object",e);
+			throw new AlfrescoUserFacadeException(e);
+		}
 		
+		
+		log.debug("-------------------------"+identifier);
+		log.debug("-------------------------"+secretAsString);
 		
 		
 		Representation userCredentials = new JsonRepresentation(jsonObject);
 		
-		Reference ref = new Reference(getConfiguration().getAlfrescoAuthenticationServiceUri());
+		Reference ref = null;
+		
+		
+		//TODO: remove this hammer
+		if (System.getenv("test.alfresco.broken") != null && System.getenv("test.alfresco.broken").equals(true) ) {
+			ref = new Reference(getConfiguration().getAlfrescoServiceBaseUriTestBroken());
+		} else {
+			ref = new Reference(getConfiguration().getAlfrescoAuthenticationServiceUri());
+		}
+		
 		
 		Response response = client.post(ref,userCredentials);
 		
 		
 		if ( response != null ) {
+			
 			log.debug("Response Entity As text: "+response.getEntityAsText());
 			log.debug("Response Status: "+response.getStatus().getName());
 			if ( response.getStatus().equals(Status.SUCCESS_OK) ) {
 				retVal = true;
+				this.alfrescoTicket = response.getEntityAsText();
+			} else if (response.getStatus().equals(Status.CLIENT_ERROR_NOT_FOUND)){
+				
+				throw new AlfrescoUserFacadeException("Alfresco Service Not found: "+response.getEntityAsText());
 			} else {
 				log.warn("Could not authenticate user in Alfresco Server. Returned Status "+response.getStatus().getName());
 			}
@@ -91,5 +114,17 @@ public class AlfrescoUserFacadeRestImpl extends AbstractAlfrescoFacade implement
 		
 		return retVal;
 	}
+
+
+
+	
+
+
+	public String getAlfrescoTicket() {
+		return alfrescoTicket;
+	}
+
+
+
 
 }
