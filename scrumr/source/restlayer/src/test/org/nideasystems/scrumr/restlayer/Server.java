@@ -18,7 +18,7 @@ public class Server extends Application {
         component.getServers().add(Protocol.HTTP, 8182);
 
         // Attach the sample application.
-        component.getDefaultHost().attach("/",
+        component.getDefaultHost().attach("",
                 new AlfrescoApplication());
 
         // Start the component.
