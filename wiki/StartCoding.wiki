@@ -39,6 +39,15 @@ mvn gwt:eclipse
 
 if you don't see the GWT shell, or if the shell is empty, something is wrong :)
 
+
+You can also start the GWT Shell using Maven:
+{{{
+mvn gwt:run
+}}}
+
+You can change the code while running the shell. To see the changes in action just refresh the Shell.
+
+
 == Restlayer ==
    * go to SCRUM_HOME/restlayer
    * run the following command to test if everything is ok:
