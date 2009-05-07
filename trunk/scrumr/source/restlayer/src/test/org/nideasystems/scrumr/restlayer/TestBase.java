@@ -13,7 +13,7 @@ import org.restlet.data.Protocol;
 public class TestBase extends TestCase{
 
 	protected Integer serverPort = 8182;
-	protected String serviceUrl = "http://localhost:" + serverPort + "/service";
+	protected String serviceUrl = "http://localhost:" + serverPort + "/";
 	private Component component = null;
 	protected IAlfrescoFacadeManager facadeManager;
 
@@ -28,7 +28,7 @@ public class TestBase extends TestCase{
 		component.getServers().add(Protocol.HTTP, 8182);
 
 		// Attach the sample application.
-		component.getDefaultHost().attach("/", app);
+		component.getDefaultHost().attach("", app);
 
 		// Start the component.
 		try {
