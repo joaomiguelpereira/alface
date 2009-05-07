@@ -20,7 +20,11 @@ public interface IAlfrescoFacadeManager {
 	
 	/**
 	 * Initialize the FacadeManager
+	 * @param alfPropName 
 	 * @throws AlfrescoFacadeManagerInitializationException
 	 */
 	public void init() throws AlfrescoFacadeManagerInitializationException;
+
+
+	
 }

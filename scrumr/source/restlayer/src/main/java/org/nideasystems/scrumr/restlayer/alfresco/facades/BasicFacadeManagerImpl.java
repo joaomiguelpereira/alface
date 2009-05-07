@@ -37,7 +37,7 @@ public class BasicFacadeManagerImpl implements IAlfrescoFacadeManager {
 
 	public IAlfrescoUserFacade getUserFacade() {
 		IAlfrescoUserFacade facade = null;
-		if ( this.facades.get(IAlfrescoFacade.class) == null ) {
+		if ( this.facades.get(IAlfrescoUserFacade.class) == null ) {
 			facade = new AlfrescoUserFacadeRestImpl(this.configuration);
 			this.facades.put(IAlfrescoUserFacade.class,facade);
 		}
