@@ -2,14 +2,13 @@ package org.nideasystems.scrumr.restlayer.resources;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
+import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
 import org.nideasystems.scrumr.restlayer.ICookieManager;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoFacadeManager;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoUserFacade;
 import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
-import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
@@ -56,9 +55,9 @@ public class AuthenticationTokenResource extends BaseResource {
 		JsonRepresentation representation = null;
 
 		AlfrescoApplication app = getAlfrescoApplication();
-		IAlfrescoFacadeManager facadeMgr = app.getFacadeManager();
+		IAlfrescoServiceProvider facadeMgr = app.getAlfrescoServiceProvider();
 		ISecurityManager securityMgr = app.getSecurityManager();
-		IAlfrescoUserFacade userFacade = facadeMgr.getUserFacade();
+		IAlfrescoUserService userFacade = facadeMgr.getUserService();
 
 		ICookieManager cookieMgr = app.getCoockieManager();
 		
@@ -68,7 +67,7 @@ public class AuthenticationTokenResource extends BaseResource {
 		try {
 			//Call facade to authenticate the user in Alfresco
 			authenticated = userFacade.authenticate(username,
-					password, Protocol.HTTP);
+					password);
 			
 			// Set the authentication cookie
 			if (authenticated) {
@@ -76,11 +75,12 @@ public class AuthenticationTokenResource extends BaseResource {
 				//TODO: Test Cookies
 				CookieSetting cookieSetting = cookieMgr
 						.createAuthenticationCookieSetting(12);
+				 
 				cookieSetting.setValue(securityMgr.createCookieValue(userFacade.getAlfrescoTicket()));
 				getResponse().getCookieSettings().add(cookieSetting);
 
 				//TODO: Organize Magic Values
-				jsonObject.append("alfresco_ticket", facadeMgr.getUserFacade()
+				jsonObject.append("alfresco_ticket", facadeMgr.getUserService()
 						.getAlfrescoTicket());
 				jsonObject.append("authentication_cookie_max_age", 12);
 				representation = new JsonRepresentation(jsonObject);
