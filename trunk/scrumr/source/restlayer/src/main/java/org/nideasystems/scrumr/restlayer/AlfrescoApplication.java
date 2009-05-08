@@ -1,29 +1,26 @@
 package org.nideasystems.scrumr.restlayer;
 
 import org.apache.log4j.Logger;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoConfiguration;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.AlfrescoFacadeManagerInitializationException;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.BasicFacadeManagerImpl;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoFacadeManager;
+import org.nideasystems.scrumr.alfresco.application.AlfrescoRestClient;
+import org.nideasystems.scrumr.alfresco.application.AlfrescoServiceProviderConfiguration;
+import org.nideasystems.scrumr.alfresco.application.BasicServiceProvider;
+import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.resources.AuthenticationTokenResource;
 import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
 import org.nideasystems.scrumr.restlayer.security.SecurityManagerImpl;
 import org.restlet.Application;
 import org.restlet.Restlet;
-
-import org.restlet.data.ChallengeScheme;
 import org.restlet.routing.Router;
 
 public class AlfrescoApplication extends Application {
 
 	
-	//private final static String REALM = "AlfrescoApplication";
 
-	//private final AlfrescoConfiguration alfrescoConfiguration = new AlfrescoConfiguration();
-	
+	/**Logger*/
 	private static final Logger log = Logger
 			.getLogger(AlfrescoApplication.class.getName());
 
+	/**The security Manager service per thread*/
 	private ThreadLocal<ISecurityManager> securityManager = new ThreadLocal<ISecurityManager>() {
 
 		@Override
@@ -33,6 +30,7 @@ public class AlfrescoApplication extends Application {
 		}
 
 	};
+	/**The cockie manager per thread*/
 	private ThreadLocal<ICookieManager> coockieManager = new ThreadLocal<ICookieManager>() {
 
 		@Override
@@ -44,23 +42,17 @@ public class AlfrescoApplication extends Application {
 
 	};
 
-	private ThreadLocal<IAlfrescoFacadeManager> facadeManager = new ThreadLocal<IAlfrescoFacadeManager>() {
+	/**The AlfrescoServiceProvider per thread*/
+	private ThreadLocal<IAlfrescoServiceProvider> alfrescoServiceProvider = new ThreadLocal<IAlfrescoServiceProvider>() {
 
 		@Override
-		protected IAlfrescoFacadeManager initialValue() {
-			IAlfrescoFacadeManager facadeMgr = new BasicFacadeManagerImpl();
-			try {
-				facadeMgr.init();
-			} catch (AlfrescoFacadeManagerInitializationException e) {
-				log.fatal("Error while initilizing AlfrescofacadeManager:", e);
-				throw new RuntimeException(e);
-			}
-			return facadeMgr;
+		protected IAlfrescoServiceProvider initialValue() {
+			IAlfrescoServiceProvider serviceProvider = new BasicServiceProvider();
+			return serviceProvider;
 		};
 	};
 
 	public ISecurityManager getSecurityManager() {
-		// TODO Auto-generated method stub
 		return securityManager.get();
 	}
 
@@ -74,8 +66,12 @@ public class AlfrescoApplication extends Application {
 		
 	}
 
-	public IAlfrescoFacadeManager getFacadeManager() {
-		return facadeManager.get();
+	public IAlfrescoServiceProvider getAlfrescoServiceProvider() {
+		IAlfrescoServiceProvider serviceProvider = alfrescoServiceProvider.get();
+		serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
+		serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
+		return serviceProvider;
+		
 	}
 
 	@Override
