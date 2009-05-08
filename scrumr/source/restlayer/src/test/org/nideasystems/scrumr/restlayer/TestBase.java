@@ -3,8 +3,9 @@ package org.nideasystems.scrumr.restlayer;
 import junit.framework.TestCase;
 
 import org.junit.Ignore;
+import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
-import org.nideasystems.scrumr.restlayer.alfresco.facades.IAlfrescoFacadeManager;
+
 import org.restlet.Component;
 
 import org.restlet.data.Protocol;
@@ -15,7 +16,7 @@ public class TestBase extends TestCase{
 	protected Integer serverPort = 8182;
 	protected String serviceUrl = "http://localhost:" + serverPort + "/";
 	private Component component = null;
-	protected IAlfrescoFacadeManager facadeManager;
+	protected IAlfrescoServiceProvider serviceProvider;
 
 	@Ignore
 	protected void setUp() {
@@ -38,16 +39,11 @@ public class TestBase extends TestCase{
 			e.printStackTrace();
 		}
 
-		this.facadeManager = app.getFacadeManager();
+		this.serviceProvider = app.getAlfrescoServiceProvider();
 
 	}
 
-	@Ignore
-	protected void brakeAlfrescoServer() {
-		this.facadeManager.getConfiguration().setAlfrescoAuthenticationServiceUri("----BROKE------");
-		
-		
-	}
+	
 	
 	@Ignore
 	protected void tearDown() {
