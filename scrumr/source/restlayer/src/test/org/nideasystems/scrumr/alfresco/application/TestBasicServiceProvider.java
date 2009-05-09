@@ -8,8 +8,8 @@ public class TestBasicServiceProvider extends BaseTestCase {
 	
 	@Test
 	public void testGetUserService() {
-		IAlfrescoServiceProvider provider1 = new BasicServiceProvider();
-		IAlfrescoServiceProvider provider2 = new BasicServiceProvider();
+		IAlfrescoServiceProvider provider1 = new BasicAlfrescoServiceProvider();
+		IAlfrescoServiceProvider provider2 = new BasicAlfrescoServiceProvider();
 		
 		IAlfrescoUserService userService1p1 = provider1.getUserService();
 		IAlfrescoUserService userService1p2 = provider2.getUserService();
