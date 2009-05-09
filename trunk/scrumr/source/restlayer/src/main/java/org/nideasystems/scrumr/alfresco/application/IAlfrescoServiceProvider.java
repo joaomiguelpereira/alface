@@ -1,9 +1,10 @@
 package org.nideasystems.scrumr.alfresco.application;
 
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
+import org.nideasystems.scrumr.serverapp.IServiceProvider;
 
 
-public interface IAlfrescoServiceProvider {
+public interface IAlfrescoServiceProvider extends IServiceProvider {
 
 	/**
 	 * Return a implementation of a Alfresco User Service 
