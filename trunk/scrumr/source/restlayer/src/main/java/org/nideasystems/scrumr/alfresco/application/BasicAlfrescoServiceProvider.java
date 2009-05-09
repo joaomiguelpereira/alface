@@ -5,6 +5,7 @@ import java.util.Map;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoService;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
 import org.nideasystems.scrumr.alfresco.services.impl.AlfrescoUserServiceImpl;
+import org.nideasystems.scrumr.serverapp.IServiceProvider;
 
 /**
  * This is a basic service provider. Not thread safe. Each thread must have
@@ -13,7 +14,7 @@ import org.nideasystems.scrumr.alfresco.services.impl.AlfrescoUserServiceImpl;
  * @author jpereira
  * 
  */
-public class BasicServiceProvider implements IAlfrescoServiceProvider {
+public class BasicAlfrescoServiceProvider implements IAlfrescoServiceProvider {
 
 	/**
 	 * Keep a local, per thread, map with all service used
@@ -32,7 +33,7 @@ public class BasicServiceProvider implements IAlfrescoServiceProvider {
 	/**
 	 * Public constructor
 	 */
-	public BasicServiceProvider() {
+	public BasicAlfrescoServiceProvider() {
 
 	}
 
