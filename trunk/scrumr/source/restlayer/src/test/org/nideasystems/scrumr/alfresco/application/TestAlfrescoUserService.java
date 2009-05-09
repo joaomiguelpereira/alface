@@ -29,7 +29,7 @@ public class TestAlfrescoUserService extends BaseTestCase {
 	@Test
 	public void testAuthenticateCorrectCredentials() throws SecurityException, NoSuchMethodException {
 
-		this.serviceProvider = new BasicServiceProvider();
+		this.serviceProvider = new BasicAlfrescoServiceProvider();
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 
 		IAlfrescoRestClient clientMock = createStrictMock(IAlfrescoRestClient.class);
@@ -69,7 +69,7 @@ public class TestAlfrescoUserService extends BaseTestCase {
 	@Test
 	public void testAuthenticateBrokenLink() throws SecurityException, NoSuchMethodException {
 
-		this.serviceProvider = new BasicServiceProvider();
+		this.serviceProvider = new BasicAlfrescoServiceProvider();
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 
 		IAlfrescoRestClient clientMock = createStrictMock(IAlfrescoRestClient.class);
@@ -85,6 +85,7 @@ public class TestAlfrescoUserService extends BaseTestCase {
 		
 				
 		boolean hasException = false;
+		
 		try {
 			IAlfrescoUserService userService = serviceProvider.getUserService();
 			
