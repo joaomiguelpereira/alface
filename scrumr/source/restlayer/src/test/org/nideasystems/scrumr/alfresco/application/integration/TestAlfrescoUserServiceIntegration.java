@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.nideasystems.scrumr.alfresco.application.AlfrescoRestClient;
 import org.nideasystems.scrumr.alfresco.application.AlfrescoServiceProviderConfiguration;
 import org.nideasystems.scrumr.alfresco.application.BaseTestCase;
-import org.nideasystems.scrumr.alfresco.application.BasicServiceProvider;
+import org.nideasystems.scrumr.alfresco.application.BasicAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
 
 
@@ -22,7 +22,7 @@ public class TestAlfrescoUserServiceIntegration extends BaseTestCase{
 	@Test
 	public void testAuthenticationCorrectCredentials() {
 		
-		this.serviceProvider = new BasicServiceProvider();
+		this.serviceProvider = new BasicAlfrescoServiceProvider();
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 		this.serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
 		
@@ -50,7 +50,7 @@ public class TestAlfrescoUserServiceIntegration extends BaseTestCase{
 	@Test
 	public void testAuthenticationBadCredentials() {
 		
-		this.serviceProvider = new BasicServiceProvider();
+		this.serviceProvider = new BasicAlfrescoServiceProvider();
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 		this.serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
 		
@@ -77,7 +77,7 @@ public class TestAlfrescoUserServiceIntegration extends BaseTestCase{
 	@Test
 	public void testAuthenticationNullCredentials() {
 		
-		this.serviceProvider = new BasicServiceProvider();
+		this.serviceProvider = new BasicAlfrescoServiceProvider();
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 		this.serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
 		
