@@ -1,13 +1,18 @@
 package org.nideasystems.scrumr.restlayer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.nideasystems.scrumr.alfresco.application.AlfrescoRestClient;
 import org.nideasystems.scrumr.alfresco.application.AlfrescoServiceProviderConfiguration;
-import org.nideasystems.scrumr.alfresco.application.BasicServiceProvider;
+import org.nideasystems.scrumr.alfresco.application.BasicAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.resources.AuthenticationTokenResource;
 import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
 import org.nideasystems.scrumr.restlayer.security.SecurityManagerImpl;
+import org.nideasystems.scrumr.serverapp.IServerApplication;
+import org.nideasystems.scrumr.serverapp.IServiceProvider;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
@@ -47,7 +52,7 @@ public class AlfrescoApplication extends Application {
 
 		@Override
 		protected IAlfrescoServiceProvider initialValue() {
-			IAlfrescoServiceProvider serviceProvider = new BasicServiceProvider();
+			IAlfrescoServiceProvider serviceProvider = new BasicAlfrescoServiceProvider();
 			return serviceProvider;
 		};
 	};
@@ -123,6 +128,36 @@ public class AlfrescoApplication extends Application {
 		// router.attachDefault(org.nideasystems.web20.poc.weblayer.resources.HelloWorld.class);
 		//return guard;
 		return authenticationRouter;
+	}
+
+	/**
+	 * Each thread will hold and implememtation of IServerApplication
+	 * It's like mini application per request to the API 
+	 * @author jpereira
+	 */
+	public class ServerApplication implements IServerApplication {
+		
+		//Map the hold the instances of service providers
+		 Map< Class<?>, IServiceProvider> serviceProviders = new HashMap<Class<?>, IServiceProvider>();
+		
+		
+		/**
+		 * Begin implementation of IServerApplication
+		 */
+		public <T extends IServiceProvider> void addServiceProvider(Class<T> serviceClazz, IServiceProvider newAlfrescoServiceProvider) {
+			//TODO: Check this
+			this.serviceProviders.put(serviceClazz, newAlfrescoServiceProvider);
+		}
+
+
+		@SuppressWarnings("unchecked")
+		public <T extends IServiceProvider> T getServiceProvider(Class<T> clazz) {
+			return (T) this.serviceProviders.get(clazz);
+
+		}
+		
+		
+
 	}
 
 	
