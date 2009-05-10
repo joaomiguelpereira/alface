@@ -26,72 +26,38 @@ public class AlfrescoApplication extends Application {
 	private static final Logger log = Logger
 			.getLogger(AlfrescoApplication.class.getName());
 
-	private ServerApplication serverApp = new ServerApplication();
+	ThreadLocal<IServerApplication> serverApp = new ThreadLocal<IServerApplication>() {
+
+		@Override
+		protected IServerApplication initialValue() {
+			IServerApplication app = new ServerApplication();
+			createAlfrescoServiceProvider(app);
+			createSecurityServiceProvider(app);
+			return app;
+		}
+		
+	};
+	
 	
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public ServerApplication getServerApp() {
-		return serverApp;
+	public IServerApplication getServerApp() {
+		return serverApp.get();
 	}
-	/**The security Manager service per thread*//*
-	private ThreadLocal<ISecurityManager> securityManager = new ThreadLocal<ISecurityManager>() {
-
-		@Override
-		protected ISecurityManager initialValue() {
-			ISecurityManager securityMgr = new SecurityManagerImpl();
-			return securityMgr;
-		}
-
-	};
-	*//**The cockie manager per thread*//*
-	private ThreadLocal<ICookieManager> coockieManager = new ThreadLocal<ICookieManager>() {
-
-		@Override
-		protected ICookieManager initialValue() {
-			ICookieManager coockiMgr = new CookieManager();
-
-			return coockiMgr;
-		}
-
-	};
-
-	*//**The AlfrescoServiceProvider per thread*//*
-	private ThreadLocal<IAlfrescoServiceProvider> alfrescoServiceProvider = new ThreadLocal<IAlfrescoServiceProvider>() {
-
-		@Override
-		protected IAlfrescoServiceProvider initialValue() {
-			IAlfrescoServiceProvider serviceProvider = new BasicAlfrescoServiceProvider();
-			return serviceProvider;
-		};
-	};
-
-	public ISecurityManager getSecurityManager() {
-		return securityManager.get();
-	}
-
-	public ICookieManager getCoockieManager() {
-		//Dependencies: TODO: Check the use of spring to ease this
-		ICookieManager cookieManager = coockieManager.get();
-		cookieManager.setSecurityManager(securityManager.get());
-		
-		return cookieManager;
-		
-		
-	}
-*/
-	private void createAlfrescoServiceProvider() {
+	
+	private void createAlfrescoServiceProvider(IServerApplication app) {
 		IAlfrescoServiceProvider serviceProvider = new BasicAlfrescoServiceProvider();
 		serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
 		serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
-		serverApp.addServiceProvider(IAlfrescoServiceProvider.class, serviceProvider);
+		app.addServiceProvider(IAlfrescoServiceProvider.class, serviceProvider);
 	}
 	
-	private void createSecurityServiceProvider() {
+	private void createSecurityServiceProvider(IServerApplication app) {
 		ISecurityServiceProvider serviceProvider = new BasicSecurityServiceProvider();
-		serverApp.addServiceProvider(ISecurityServiceProvider.class, serviceProvider);
+		app.addServiceProvider(ISecurityServiceProvider.class, serviceProvider);
 		
 	}
 
@@ -101,8 +67,6 @@ public class AlfrescoApplication extends Application {
 		super.start();
 		
 		log.debug("Starting...");
-		createAlfrescoServiceProvider();
-		createSecurityServiceProvider();
 
 	}
 
@@ -158,27 +122,20 @@ public class AlfrescoApplication extends Application {
 	public class ServerApplication implements IServerApplication {
 		
 		/**The security Manager service per thread*/
-		private ThreadLocal<Map< Class<?>, IServiceProvider>> serviceProviders = new ThreadLocal<Map< Class<?>, IServiceProvider>>() {
-
-			@Override
-			protected Map<Class<?>, IServiceProvider> initialValue() {
-				return new HashMap<Class<?>, IServiceProvider>();
-			}
-			
-		};
+		Map< Class<?>, IServiceProvider> serviceProviders = new HashMap< Class<?>, IServiceProvider>();
 		
 		/**
 		 * Begin implementation of IServerApplication
 		 */
 		public <T extends IServiceProvider> void addServiceProvider(Class<T> serviceClazz, IServiceProvider newAlfrescoServiceProvider) {
 			//TODO: Check this
-			this.serviceProviders.get().put(serviceClazz, newAlfrescoServiceProvider);
+			this.serviceProviders.put(serviceClazz, newAlfrescoServiceProvider);
 		}
 
 
 		@SuppressWarnings("unchecked")
 		public <T extends IServiceProvider> T getServiceProvider(Class<T> clazz) {
-			return (T) this.serviceProviders.get().get(clazz);
+			return (T) this.serviceProviders.get(clazz);
 
 		}
 		
