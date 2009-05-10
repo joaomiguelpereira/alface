@@ -17,10 +17,11 @@ public class TestBase extends TestCase{
 	protected String serviceUrl = "http://localhost:" + serverPort + "/";
 	private Component component = null;
 	protected IAlfrescoServiceProvider serviceProvider;
+	protected AlfrescoApplication app = null;
 
 	@Ignore
 	protected void setUp() {
-		AlfrescoApplication app = new AlfrescoApplication();
+		app = new AlfrescoApplication();
 		// Initialize the server
 		// Create a new Component.
 		component = new Component();
@@ -39,7 +40,7 @@ public class TestBase extends TestCase{
 			e.printStackTrace();
 		}
 
-		this.serviceProvider = app.getAlfrescoServiceProvider();
+		//this.serviceProvider = app.getAlfrescoServiceProvider();
 
 	}
 

@@ -19,6 +19,25 @@ public class TestConfiguration extends TestCase {
 		assertEquals(confA.getDomainName(), "http://localhost");
 		assertEquals(confA.getMajorVersion(), 0);
 		assertEquals(confA.getMinorVersion(), 1);
-
+		assertEquals(confA.getAuthenticationCookieDefaultMaxAge(), 30);
 	}
+	
+	@Test
+	public void testEquality() {
+		Configuration confA = Configuration.get();
+		Configuration confB = Configuration.get();
+		assertNotNull(confA);
+		assertNotNull(confB);
+		assertNotSame(confA, confB);
+		assertEquals(confA, confB);
+		assertEquals(confA.hashCode(), confB.hashCode());
+		
+		//change something in confB
+		confB.setAuthenticationCookieDefaultMaxAge(100);
+		assertFalse(confA.equals(confB));
+		
+		
+		
+}
+
 }
