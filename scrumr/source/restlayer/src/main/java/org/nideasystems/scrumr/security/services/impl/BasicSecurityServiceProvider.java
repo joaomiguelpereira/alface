@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nideasystems.scrumr.alfresco.application.AlfrescoServiceProviderConfiguration;
-import org.nideasystems.scrumr.alfresco.services.IAlfrescoService;
-import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
+
+
 import org.nideasystems.scrumr.security.ISecurityServiceProvider;
 import org.nideasystems.scrumr.security.services.BasicSecurityService;
 import org.nideasystems.scrumr.security.services.IBasicSecurityService;
