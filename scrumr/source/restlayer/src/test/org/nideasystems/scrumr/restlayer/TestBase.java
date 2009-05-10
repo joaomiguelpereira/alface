@@ -27,7 +27,7 @@ public class TestBase extends TestCase{
 		component = new Component();
 
 		// Add a new HTTP server listening on port 8182.
-		component.getServers().add(Protocol.HTTP, 8182);
+		component.getServers().add(Protocol.HTTP, serverPort);
 
 		// Attach the sample application.
 		component.getDefaultHost().attach("", app);
