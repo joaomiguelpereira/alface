@@ -11,6 +11,8 @@ import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.resources.AuthenticationTokenResource;
 import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
 import org.nideasystems.scrumr.restlayer.security.SecurityManagerImpl;
+import org.nideasystems.scrumr.security.ISecurityServiceProvider;
+import org.nideasystems.scrumr.security.services.impl.BasicSecurityServiceProvider;
 import org.nideasystems.scrumr.serverapp.IServerApplication;
 import org.nideasystems.scrumr.serverapp.IServiceProvider;
 import org.restlet.Application;
@@ -25,7 +27,17 @@ public class AlfrescoApplication extends Application {
 	private static final Logger log = Logger
 			.getLogger(AlfrescoApplication.class.getName());
 
-	/**The security Manager service per thread*/
+	private ServerApplication serverApp = new ServerApplication();
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ServerApplication getServerApp() {
+		return serverApp;
+	}
+	/**The security Manager service per thread*//*
 	private ThreadLocal<ISecurityManager> securityManager = new ThreadLocal<ISecurityManager>() {
 
 		@Override
@@ -35,7 +47,7 @@ public class AlfrescoApplication extends Application {
 		}
 
 	};
-	/**The cockie manager per thread*/
+	*//**The cockie manager per thread*//*
 	private ThreadLocal<ICookieManager> coockieManager = new ThreadLocal<ICookieManager>() {
 
 		@Override
@@ -47,7 +59,7 @@ public class AlfrescoApplication extends Application {
 
 	};
 
-	/**The AlfrescoServiceProvider per thread*/
+	*//**The AlfrescoServiceProvider per thread*//*
 	private ThreadLocal<IAlfrescoServiceProvider> alfrescoServiceProvider = new ThreadLocal<IAlfrescoServiceProvider>() {
 
 		@Override
@@ -70,19 +82,28 @@ public class AlfrescoApplication extends Application {
 		
 		
 	}
-
-	public IAlfrescoServiceProvider getAlfrescoServiceProvider() {
-		IAlfrescoServiceProvider serviceProvider = alfrescoServiceProvider.get();
+*/
+	private void createAlfrescoServiceProvider() {
+		IAlfrescoServiceProvider serviceProvider = new BasicAlfrescoServiceProvider();
 		serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
 		serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
-		return serviceProvider;
+		serverApp.addServiceProvider(IAlfrescoServiceProvider.class, serviceProvider);
+	}
+	
+	private void createSecurityServiceProvider() {
+		ISecurityServiceProvider serviceProvider = new BasicSecurityServiceProvider();
+		serverApp.addServiceProvider(ISecurityServiceProvider.class, serviceProvider);
 		
 	}
 
+	
 	@Override
 	public synchronized void start() throws Exception {
 		super.start();
+		
 		log.debug("Starting...");
+		createAlfrescoServiceProvider();
+		createSecurityServiceProvider();
 
 	}
 
@@ -137,22 +158,28 @@ public class AlfrescoApplication extends Application {
 	 */
 	public class ServerApplication implements IServerApplication {
 		
-		//Map the hold the instances of service providers
-		 Map< Class<?>, IServiceProvider> serviceProviders = new HashMap<Class<?>, IServiceProvider>();
-		
+		/**The security Manager service per thread*/
+		private ThreadLocal<Map< Class<?>, IServiceProvider>> serviceProviders = new ThreadLocal<Map< Class<?>, IServiceProvider>>() {
+
+			@Override
+			protected Map<Class<?>, IServiceProvider> initialValue() {
+				return new HashMap<Class<?>, IServiceProvider>();
+			}
+			
+		};
 		
 		/**
 		 * Begin implementation of IServerApplication
 		 */
 		public <T extends IServiceProvider> void addServiceProvider(Class<T> serviceClazz, IServiceProvider newAlfrescoServiceProvider) {
 			//TODO: Check this
-			this.serviceProviders.put(serviceClazz, newAlfrescoServiceProvider);
+			this.serviceProviders.get().put(serviceClazz, newAlfrescoServiceProvider);
 		}
 
 
 		@SuppressWarnings("unchecked")
 		public <T extends IServiceProvider> T getServiceProvider(Class<T> clazz) {
-			return (T) this.serviceProviders.get(clazz);
+			return (T) this.serviceProviders.get().get(clazz);
 
 		}
 		
