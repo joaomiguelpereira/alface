@@ -81,28 +81,31 @@ public class AuthenticationTokenResource extends BaseResource {
 		
 				//TODO: Move the code that create and set the cookie out out of the resource represenation creation
 				//Use it in the authentication filter...??
+				//The cookie value is encoded as base64 with the jsonObject string
 				String name = securityService.getHashFromValue("AuthenticationCookieSetting");
 				Configuration.get().getAuthenticationCookieDefaultMaxAge();
 				CookieSetting cookieSetting = BasicCookieUtils.createAuthenticationCookieSetting(name,Configuration.get().getAuthenticationCookieDefaultMaxAge());
 				 
-				cookieSetting.setValue(securityService.getValueTo64BasedEncoded(userService.getAlfrescoTicket()));
+				
 				
 				//Add the cookie
 				getResponse().getCookieSettings().add(cookieSetting);
 
 				//TODO: Organize Magic Values
-				jsonObject.append("alfresco_ticket", alfServiceProvider.getUserService()
-						.getAlfrescoTicket());
-				jsonObject.append("authentication_cookie_max_age", 12);
+				jsonObject.append("alfresco_ticket", userService.getAlfrescoTicket());
+				jsonObject.append("authentication_cookie_max_age", Configuration.get().getAuthenticationCookieDefaultMaxAge());
+				jsonObject.append("username", username);
+				String jsonAsString = jsonObject.toString();
+				cookieSetting.setValue(securityService.getValueTo64BasedEncoded( jsonAsString ));
 				representation = new JsonRepresentation(jsonObject);
 				getResponse().setStatus(Status.SUCCESS_OK);
 
 			} else {
-				jsonObject.accumulate("error", "Could not authenticate");
+				jsonObject.append("error", "Could not authenticate");
 				
-				//jsonObject.append("error", "Could not authenticate");
+				
 				representation = new JsonRepresentation(jsonObject);
-				//getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+			
 				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
 			}
 
