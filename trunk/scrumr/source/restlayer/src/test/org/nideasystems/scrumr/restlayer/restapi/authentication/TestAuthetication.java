@@ -40,14 +40,17 @@ public class TestAuthetication extends TestBase {
 	@Test
 	public void testAuthorizationOk() {
 
+		// As a User Agent, I want to send a form with username/password
+		// As a User Agent I want to receive a JSON String representing the
+		// AuthenticationToken if the username/password is ok (the
+		// authenticationToken is base64Encoded with alfrescoAuthTicket:String, username:String, maxAge:Integer)
+		// As a User Agent I Want to receive a Cookie with the Authentication
+		// Token if the username/passwork is ok (cookie has a JSON Representation of the ticket
+
 		// Prepare the request
 		Request request = new Request(Method.POST, super.serviceUrl
 				+ authenticationTokenPath);
 
-		// Add client authnetication
-		// ChallengeScheme challengeSchema = ChallengeScheme.HTTP_COOKIE;
-
-		// ChallengeResponse challengeResponse = new ChallengeResponse();
 		Form loginForm = new Form();
 		loginForm.add("username", "admin");
 		loginForm.add("password", "admin");
@@ -69,9 +72,11 @@ public class TestAuthetication extends TestBase {
 			JsonRepresentation rep = new JsonRepresentation(obj.toString());
 			JSONObject jsonO = rep.getJsonObject();
 
+			
 			// TODO: Define error messages in JSON Format
 			assertNotNull(jsonO.get("alfresco_ticket"));
-			System.out.println("Authentication Tike:"+jsonO.get("alfresco_ticket"));
+			System.out.println("Authentication Tike:"
+					+ jsonO.get("alfresco_ticket"));
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -142,31 +147,7 @@ public class TestAuthetication extends TestBase {
 		Assert.assertEquals(Status.CLIENT_ERROR_FORBIDDEN, res.getStatus());
 	}
 
-	@Test
-	public void testAuthorizationFailNoAlfrescoUp() {
-
-		// TODO: Find a way to change config of the current thread
-
-		// test.alfresco.broken
-
-		// TODO: Add system environment
-
-		// Prepare the request
-		Request request = new Request(Method.POST, super.serviceUrl
-				+ authenticationTokenPath);
-
-		// Add client authnetication
-		// ChallengeScheme challengeSchema = ChallengeScheme.HTTP_COOKIE;
-
-		// ChallengeResponse challengeResponse = new ChallengeResponse();
-
-		Client client = new Client(Protocol.HTTP);
-
-		Response res = client.handle(request);
-		Assert.assertNotNull(res);
-		Assert.assertEquals(Status.SERVER_ERROR_INTERNAL, res.getStatus());
-	}
-
+	
 	@Before
 	public void tearUp() {
 		super.setUp();
