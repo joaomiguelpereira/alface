@@ -7,7 +7,7 @@ public class TestBasicServiceProvider extends BaseTestCase {
 	
 	
 	@Test
-	public void testGetUserService() {
+	public void testGetUserServiceFromAlfrescoServiceProvider() {
 		IAlfrescoServiceProvider provider1 = new BasicAlfrescoServiceProvider();
 		IAlfrescoServiceProvider provider2 = new BasicAlfrescoServiceProvider();
 		
@@ -18,8 +18,6 @@ public class TestBasicServiceProvider extends BaseTestCase {
 		assertNotNull(userService1p1);
 		assertNotNull(userService1p2);
 		
-		//They should be different instances
-		assertNotSame(userService1p1, userService1p2);
 		
 		//For the same instance of a provider, the service should be the same
 		IAlfrescoUserService userService2p1 = provider1.getUserService();
@@ -28,5 +26,7 @@ public class TestBasicServiceProvider extends BaseTestCase {
 		
 		
 	}
+	
+
 
 }
