@@ -1,5 +1,5 @@
 package org.nideasystems.scrumr.serverapp;
 
-public interface IServiceProvider{
+public interface IServiceProvider {
 
 }
