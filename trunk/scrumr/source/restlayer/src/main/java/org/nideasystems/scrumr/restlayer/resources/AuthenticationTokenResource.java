@@ -6,12 +6,11 @@ import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
 import org.nideasystems.scrumr.restlayer.Configuration;
-import org.nideasystems.scrumr.restlayer.ICookieManager;
-import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
+
 import org.nideasystems.scrumr.restlayer.util.BasicCookieUtils;
 import org.nideasystems.scrumr.security.ISecurityServiceProvider;
 import org.nideasystems.scrumr.security.services.IBasicSecurityService;
-import org.nideasystems.scrumr.security.services.ISecurityService;
+
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.Status;

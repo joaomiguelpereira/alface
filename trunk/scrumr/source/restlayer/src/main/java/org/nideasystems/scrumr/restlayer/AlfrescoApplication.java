@@ -9,8 +9,7 @@ import org.nideasystems.scrumr.alfresco.application.AlfrescoServiceProviderConfi
 import org.nideasystems.scrumr.alfresco.application.BasicAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.resources.AuthenticationTokenResource;
-import org.nideasystems.scrumr.restlayer.security.ISecurityManager;
-import org.nideasystems.scrumr.restlayer.security.SecurityManagerImpl;
+
 import org.nideasystems.scrumr.security.ISecurityServiceProvider;
 import org.nideasystems.scrumr.security.services.impl.BasicSecurityServiceProvider;
 import org.nideasystems.scrumr.serverapp.IServerApplication;
