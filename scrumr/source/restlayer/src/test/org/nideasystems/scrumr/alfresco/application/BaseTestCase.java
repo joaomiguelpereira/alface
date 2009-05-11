@@ -1,5 +1,7 @@
 package org.nideasystems.scrumr.alfresco.application;
 
+import org.junit.Ignore;
+
 import junit.framework.TestCase;
 
 /**
@@ -7,6 +9,7 @@ import junit.framework.TestCase;
  * @author jpereira
  *
  */
+@Ignore
 public class BaseTestCase extends TestCase {
 
 	
@@ -15,6 +18,7 @@ public class BaseTestCase extends TestCase {
 	
 	protected IAlfrescoServiceProvider serviceProvider = null;
 	
+	@Ignore
 	@Override
 	protected void setUp() throws Exception {
 		//this.serviceProvider = new BasicServiceProvider();
@@ -22,7 +26,7 @@ public class BaseTestCase extends TestCase {
 		super.setUp();
 		
 	}
-
+	@Ignore
 	@Override
 	protected void tearDown() throws Exception {
 		
