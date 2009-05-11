@@ -1,27 +1,26 @@
 package org.nideasystems.scrumr.restlayer.restapi.authentication;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import junit.framework.Assert;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONTokener;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.nideasystems.scrumr.common.SharedConstants;
 import org.nideasystems.scrumr.restlayer.TestBase;
 import org.restlet.Client;
-import org.restlet.data.ChallengeRequest;
-import org.restlet.data.ChallengeResponse;
-import org.restlet.data.ChallengeScheme;
+import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.Method;
 import org.restlet.data.Protocol;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.engine.util.Base64;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 
@@ -40,32 +39,119 @@ public class TestAuthetication extends TestBase {
 	@Test
 	public void testAuthorizationOk() {
 
-		// As a User Agent, I want to send a form with username/password
-		// As a User Agent I want to receive a JSON String representing the
-		// AuthenticationToken if the username/password is ok (the
-		// authenticationToken is base64Encoded with alfrescoAuthTicket:String, username:String, maxAge:Integer)
-		// As a User Agent I Want to receive a Cookie with the Authentication
-		// Token if the username/passwork is ok (cookie has a JSON Representation of the ticket
+		// * As a User, I want to send a form with my username/password, so I can authenticate my self and use the services
+		// 
+		//* As a User Agent I want to receive a JSON String representing the AuthenticationToken if the username/password is ok (the
+		// 	authenticationToken is base64Encoded with alfrescoAuthTicket:String, username:String, maxAge:Integer)
+		//
+		// * As a User Agent I Want to receive a Cookie with the Authentication
+		// 	Token if the username/passwork is ok (cookie has a JSON Representation of the ticket
 
 		// Prepare the request
 		Request request = new Request(Method.POST, super.serviceUrl
 				+ authenticationTokenPath);
+		
 
+		//Create the form
 		Form loginForm = new Form();
 		loginForm.add("username", "admin");
 		loginForm.add("password", "admin");
+		//I want to get also the authentication cookie
+		
+		loginForm.add("cookie", "true");
+		//I also want to set the time of validity of the token/cookie (now just cookie is working)
+		loginForm.add("maxAge", "10");
+		
 		Representation repEnt = loginForm.getWebRepresentation();
-
+		//Set the form as an Entity
 		request.setEntity(repEnt);
 
+		//Create a client connector
 		Client client = new Client(Protocol.HTTP);
 
+		//Add the entity to the request
 		request.setEntity(repEnt);
+		//Let the connector send the request and get a response
 		Response res = client.handle(request);
+		//the response should not be null
 		Assert.assertNotNull(res);
+		//the status of the Server is OK
 		Assert.assertEquals(Status.SUCCESS_OK, res.getStatus());
-
+		
+		//we have a JSonRespresentation of the the AUthenticationToken
+		String authTokenAsString = res.getEntityAsText();
 		try {
+			JSONObject jsonObj = new JSONObject(authTokenAsString);
+			System.out.println(authTokenAsString);
+			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET));
+			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_USERNAME));
+			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE));
+			
+			
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+			fail();
+		}
+		
+		//Have to check the Cookies also. I expect to have one cookie at least
+		Set<String> cookieNames = res.getCookieSettings().getNames();
+		
+		//must have at least one cookie
+		assertTrue(cookieNames.size()>0);
+		
+		Iterator<String> it = cookieNames.iterator();
+		
+		while( it.hasNext() ) {
+			 //I'm assuming only one cookie in the response!! I have no idea if it's the right cookie. 
+			 CookieSetting cookie = res.getCookieSettings().getFirst(it.next());
+			 //Has to have a name 
+			 assertNotNull(cookie.getName());
+			 System.out.println("-->"+cookie.getName());
+			 
+			 //Has to have a value
+			 String authToken = cookie.getValue();
+			 assertNotNull(authToken);
+			 System.out.println("-->"+authToken);
+			 
+			//Has to have a value Max Age 
+			 int maxAge = cookie.getMaxAge();
+			 //(I've send in the req 10)
+			 assertEquals(10, maxAge);
+			 System.out.println("-->"+maxAge);
+			 
+			 //Has to have a Domain
+			 String domain = cookie.getDomain();
+			 assertNotNull(domain);
+			 System.out.println("-->"+domain);
+			 //ok it's the cookie
+			 
+			 //now decode the cookie value into a valid AuthenticationToken json obj
+			 byte[] data = Base64.decode(authToken);
+			 
+			 assertNotNull(data);
+			 String dataAsString = new String(data);
+			 assertNotNull(dataAsString);
+			 System.out.println("-->"+dataAsString);
+			 
+			 //Should be able to get a JsonObject from the decoded string :)
+			 try {
+				JSONObject jsonObj = new JSONObject(dataAsString);
+				assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET));
+				assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_USERNAME));
+				assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE));
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				fail();
+			}
+			 
+			 
+		 }
+		
+		
+
+		/*try {
 
 			Object obj = JSONObject.stringToValue(res.getEntityAsText());
 
@@ -82,7 +168,7 @@ public class TestAuthetication extends TestBase {
 			e.printStackTrace();
 			// TODO Auto-generated catch block
 			fail();
-		}
+		}*/
 	}
 
 	@Test
