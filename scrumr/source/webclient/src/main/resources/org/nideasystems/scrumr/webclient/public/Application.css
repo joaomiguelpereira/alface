@@ -9,6 +9,9 @@ button {
   width: 100%
 }
 
-img {
-  margin-top: 20px;
-}
+.wdnPannelHeader {
+	
+		background-image: url(imgs/wndIcon.png);
+	}
+
+
