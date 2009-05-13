@@ -5,6 +5,7 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -28,6 +29,24 @@ public class TestAuthetication extends TestBase {
 
 	private static final String authenticationTokenPath = "user/authenticationToken";
 
+	
+	public void testLogoutOk() {
+		//As a User I want to logout, destroying all my session data
+		Request request = new Request(Method.DELETE, super.serviceUrl
+				+ authenticationTokenPath);
+		
+		//Create a client connector
+		Client client = new Client(Protocol.HTTP);
+
+		//Let the connector send the request and get a response
+		Response res = client.handle(request);
+		
+		assertEquals(Status.SUCCESS_OK, res.getStatus());
+		
+
+	
+		
+	}
 	// @Ignore
 	// public void testAuthorizationForWholeSite() {
 	// Client client = new Client(Protocol.HTTP);
@@ -86,6 +105,18 @@ public class TestAuthetication extends TestBase {
 			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET));
 			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_USERNAME));
 			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE));
+			assertNotNull(jsonObj.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE));
+			
+
+			
+			boolean acceptCoockie =  ((JSONArray)jsonObj.get(SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE)).getBoolean(0);
+			
+			assertEquals(true,acceptCoockie);
+			
+			int maxAge= ((JSONArray)jsonObj.get(SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE)).getInt(0);
+			
+			
+			assertEquals(10, maxAge);
 			
 			
 		} catch (JSONException e1) {
