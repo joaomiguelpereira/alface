@@ -1,16 +1,23 @@
 package org.nideasystems.scrumr.webclient.client;
 
+import org.nideasystems.scrumr.webclient.client.manager.ClientManager;
+import org.nideasystems.scrumr.webclient.client.manager.SecurityManager;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.Viewport;
 import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -28,12 +35,8 @@ public class Application implements EntryPoint {
 		Panel borderPanel = new Panel();
 		borderPanel.setLayout(new BorderLayout());
 
-		// add north panel
-		Panel northPanel = new Panel();
-		northPanel.setHtml("<p>north panel</p>");
-		northPanel.setHeight(32);
-		northPanel.setBodyStyle("background-color:#FFFF88");
-		borderPanel.add(northPanel, new BorderLayoutData(RegionPosition.NORTH));
+
+		borderPanel.add(ClientManager.getInstance().getMainToolbar(), new BorderLayoutData(RegionPosition.NORTH));
 
 		// add south panel
 		Panel southPanel = new Panel();
@@ -98,11 +101,22 @@ public class Application implements EntryPoint {
 		Viewport viewport = new Viewport(panel);
 	}
 
+	
+
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		setDeps();
 		loadMainWindow();
-		LoginWindow.getInstance().show();
+		if (!SecurityManager.getInstance().getIsAuthenticated()) {
+			ClientManager.getInstance().getLoginWindow().show();
+			
+			
+		}
+	}
+	private void setDeps() {
+		ClientManager.getInstance().setLoginWindow(new LoginWindow());
+		ClientManager.getInstance().setMainToolbar(new MainToolbar());
 	}
 }
