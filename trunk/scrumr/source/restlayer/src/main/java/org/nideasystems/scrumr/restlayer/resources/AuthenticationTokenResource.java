@@ -1,6 +1,7 @@
 package org.nideasystems.scrumr.restlayer.resources;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
@@ -17,6 +18,7 @@ import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 
@@ -30,12 +32,44 @@ import org.restlet.resource.ResourceException;
 public class AuthenticationTokenResource extends BaseResource {
 
 	Logger log = Logger.getLogger(AuthenticationTokenResource.class.getName());
+	
+	AlfrescoApplication app = getAlfrescoApplication();
+	IAlfrescoServiceProvider alfServiceProvider = app.getServerApp()
+			.getServiceProvider(IAlfrescoServiceProvider.class);
+	IBasicSecurityService securityService = app.getServerApp()
+			.getServiceProvider(ISecurityServiceProvider.class)
+			.getBasicSecurityService();
+
+	IAlfrescoUserService userService = alfServiceProvider.getUserService();
 
 	@Override
 	protected void doInit() throws ResourceException {
 
 		super.doInit();
 
+	}
+
+	@Delete
+	public Representation delete() {
+		JSONObject returnObject = new JSONObject();
+		
+		//Dos not make much sense, or does?
+		try {
+			
+			//Remove any cookie
+			String name = securityService
+			.getHashFromValue("AuthenticationCookieSetting");
+			getResponse().getCookieSettings().removeAll(name);
+			//Doing nothing here. 
+			returnObject.append("status", "ok");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			log.fatal("Error while creating JSON",e);
+			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+		}
+		
+		Representation rep = new JsonRepresentation(returnObject);
+		return rep;
 	}
 
 	/**
@@ -48,6 +82,7 @@ public class AuthenticationTokenResource extends BaseResource {
 	public Representation authenticate() {
 		String username = null;
 		String password = null;
+
 		int maxAge = Configuration.get().getAuthenticationCookieDefaultMaxAge(); // default
 		// seconds
 		boolean addCookie = true; // Default, send also the cookie for client
@@ -74,15 +109,6 @@ public class AuthenticationTokenResource extends BaseResource {
 		JSONObject jsonObject = new JSONObject();
 		JsonRepresentation representation = null;
 
-		AlfrescoApplication app = getAlfrescoApplication();
-		IAlfrescoServiceProvider alfServiceProvider = app.getServerApp()
-				.getServiceProvider(IAlfrescoServiceProvider.class);
-		IBasicSecurityService securityService = app.getServerApp()
-				.getServiceProvider(ISecurityServiceProvider.class)
-				.getBasicSecurityService();
-
-		IAlfrescoUserService userService = alfServiceProvider.getUserService();
-
 		// ICookieManager cookieMgr = app.getCoockieManager();
 
 		boolean authenticated = false;
@@ -107,11 +133,16 @@ public class AuthenticationTokenResource extends BaseResource {
 								userService.getAlfrescoTicket());
 				jsonObject.append(
 						SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE,
-						Configuration.get()
-								.getAuthenticationCookieDefaultMaxAge());
+						maxAge);
+
 				jsonObject.append(
 						SharedConstants.Json.AUTHENTICATION_TOKEN_USERNAME,
 						username);
+
+				jsonObject
+						.append(
+								SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE,
+								addCookie);
 
 				representation = new JsonRepresentation(jsonObject);
 
