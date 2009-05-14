@@ -1,5 +1,7 @@
 package org.nideasystems.scrumr.webclient.client;
 
+
+
 import org.nideasystems.scrumr.webclient.client.manager.ClientManager;
 import org.nideasystems.scrumr.webclient.client.manager.SecurityManager;
 
@@ -18,6 +20,7 @@ public class MainToolbar extends Toolbar {
 	ToolbarButton loginButton = null;
 
 	ToolbarButton userInfoButton = null;
+	ToolbarButton logoutButton = null;
 	
 	//Exists only one instance of the toolbar
 	public MainToolbar() {
@@ -54,14 +57,32 @@ public class MainToolbar extends Toolbar {
 		}
 		
 		super.addButton(userInfoButton);
+		
+		//Create logout button
+		this.logoutButton = new ToolbarButton();
+		this.logoutButton.setText("Logout");
+		this.logoutButton.setVisible(SecurityManager.getInstance().getIsAuthenticated());
+		this.logoutButton.addListener(new ButtonListenerAdapter() {
+
+			@Override
+			public void onClick(Button button, EventObject e) {	
+				SecurityManager.getInstance().logout();
+			}
+			
+		});
+		super.addButton(this.logoutButton);
+		
 	}
 	public void updateButtons() {
 		//hide/show login button
 		this.loginButton.setVisible(!SecurityManager.getInstance().getIsAuthenticated());
+		this.logoutButton.setVisible(SecurityManager.getInstance().getIsAuthenticated());
 		
 		if ( SecurityManager.getInstance().getIsAuthenticated() ) {
 			this.userInfoButton.setText("Welcome "+SecurityManager.getInstance().getAuthenticationToken().getUserName());
 			this.userInfoButton.setVisible(true);
+		} else {
+			this.userInfoButton.setVisible(false);
 		}
 	}
 	
