@@ -149,4 +149,28 @@ public class AlfrescoUserService extends AbstractAlfrescoService {
 		}
 
 	}
+
+	public void logout() {
+		//Create a client connector
+		Client client = new Client(Protocol.HTTP);
+		
+		// Let Resource Reference for the object to delete
+		Reference resourceRef = new Reference(SERVICE_URL
+				+ AUTHENTICATION_TOKEN_PATH);
+		//send a DELETE for resourec AuthenticationToken
+		client.delete(resourceRef, new LogoutCallBack());
+
+		
+		
+		
+		
+	}
+	private class LogoutCallBack implements Callback {
+
+		public void onEvent(Request request, Response response) {
+			//nothing to do here?
+			
+		}
+		
+	}
 }
