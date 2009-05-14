@@ -1,5 +1,7 @@
 package org.nideasystems.scrumr.restlayer.resources;
 
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +14,7 @@ import org.nideasystems.scrumr.restlayer.Configuration;
 import org.nideasystems.scrumr.restlayer.util.BasicCookieUtils;
 import org.nideasystems.scrumr.security.ISecurityServiceProvider;
 import org.nideasystems.scrumr.security.services.IBasicSecurityService;
+import org.nideasystems.scrumr.security.services.ISecurityService;
 
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
@@ -32,7 +35,7 @@ import org.restlet.resource.ResourceException;
 public class AuthenticationTokenResource extends BaseResource {
 
 	Logger log = Logger.getLogger(AuthenticationTokenResource.class.getName());
-	
+
 	AlfrescoApplication app = getAlfrescoApplication();
 	IAlfrescoServiceProvider alfServiceProvider = app.getServerApp()
 			.getServiceProvider(IAlfrescoServiceProvider.class);
@@ -45,6 +48,7 @@ public class AuthenticationTokenResource extends BaseResource {
 	@Override
 	protected void doInit() throws ResourceException {
 
+		
 		super.doInit();
 
 	}
@@ -53,21 +57,41 @@ public class AuthenticationTokenResource extends BaseResource {
 	public Representation delete() {
 		JSONObject returnObject = new JSONObject();
 		
-		//Dos not make much sense, or does?
+		//Form form = getRequestEntityAsForm();
+
+		/*String key = form.getValues("key");
+
+		if (key == null
+				|| !key.equals(securityService
+						.getHashFromValue(ISecurityService.SECRET))) {
+			JsonRepresentation representation = new JsonRepresentation("Key is invalid or null");
+			getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+			return representation;
+		}*/
+		// Does not make much sense, or does?
+		//TODO: Review this security mechanist (get it out of the res*/
 		try {
-			
-			//Remove any cookie
+			// let's see if we have any cookie sent?
+			Iterator<String> itSent = getRequest().getCookies().getNames()
+					.iterator();
+
+			while (itSent.hasNext()) {
+				log.debug("Cookie Name: " + itSent.next());
+			}
+
+			// Remove any cookie
 			String name = securityService
-			.getHashFromValue("AuthenticationCookieSetting");
+					.getHashFromValue("AuthenticationCookieSetting");
 			getResponse().getCookieSettings().removeAll(name);
-			//Doing nothing here. 
+
+			// Doing nothing here.
 			returnObject.append("status", "ok");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			log.fatal("Error while creating JSON",e);
+			log.fatal("Error while creating JSON", e);
 			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
 		}
-		
+
 		Representation rep = new JsonRepresentation(returnObject);
 		return rep;
 	}
@@ -82,6 +106,8 @@ public class AuthenticationTokenResource extends BaseResource {
 	public Representation authenticate() {
 		String username = null;
 		String password = null;
+		//String key = null;
+		JsonRepresentation representation = null;
 
 		int maxAge = Configuration.get().getAuthenticationCookieDefaultMaxAge(); // default
 		// seconds
@@ -91,6 +117,20 @@ public class AuthenticationTokenResource extends BaseResource {
 
 		password = form.getValues("username");
 		username = form.getValues("password");
+
+		/*// TODO: Refactor
+		// use a HASH to reinfornce security here. Only client calls with the
+		// correct key are allowed.
+		// for now a has is sufficient
+		key = form.getValues("key");
+
+		if (key == null
+				|| !key.equals(securityService
+						.getHashFromValue(ISecurityService.SECRET))) {
+			representation = new JsonRepresentation("Key is invalid or null");
+			getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+			return representation;
+		}*/
 
 		try {
 			maxAge = new Integer(form.getValues("maxAge"));
@@ -107,7 +147,6 @@ public class AuthenticationTokenResource extends BaseResource {
 
 		// Create a new JSON Object to POST in Alfresco
 		JSONObject jsonObject = new JSONObject();
-		JsonRepresentation representation = null;
 
 		// ICookieManager cookieMgr = app.getCoockieManager();
 
@@ -155,12 +194,11 @@ public class AuthenticationTokenResource extends BaseResource {
 
 					CookieSetting cookieSetting = BasicCookieUtils
 							.createAuthenticationCookieSetting(name, maxAge);
+					cookieSetting.setValue(securityService
+							.getValueTo64BasedEncoded(jsonAsString));
 
 					// Add the cookie
 					getResponse().getCookieSettings().add(cookieSetting);
-
-					cookieSetting.setValue(securityService
-							.getValueTo64BasedEncoded(jsonAsString));
 
 				}
 
