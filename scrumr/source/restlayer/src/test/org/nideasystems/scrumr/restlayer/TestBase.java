@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Ignore;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
+import org.nideasystems.scrumr.security.services.BasicSecurityService;
 
 import org.restlet.Component;
 
@@ -18,7 +19,8 @@ public class TestBase extends TestCase{
 	private Component component = null;
 	protected IAlfrescoServiceProvider serviceProvider;
 	protected AlfrescoApplication app = null;
-
+	protected BasicSecurityService securityService = new BasicSecurityService();
+	
 	@Ignore
 	protected void setUp() {
 		app = new AlfrescoApplication();
@@ -40,6 +42,7 @@ public class TestBase extends TestCase{
 			e.printStackTrace();
 		}
 
+		
 		//this.serviceProvider = app.getAlfrescoServiceProvider();
 
 	}
