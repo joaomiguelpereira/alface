@@ -119,9 +119,9 @@ public class LoginWindow extends Window {
 		};
 
 		//Add the buttons
-		super.addButton(loginBtn = new Button(Constants.OK_BUTTON_LABEL,
+		super.addButton(this.loginBtn = new Button(Constants.OK_BUTTON_LABEL,
 				loginButtonListener));
-		super.addButton(cancelBtn = new Button(Constants.CANCEL_BUTTON_LABEL,
+		super.addButton(this.cancelBtn = new Button(Constants.CANCEL_BUTTON_LABEL,
 				cancelLoginButtonListener));
 
 		//TODO:wtf
