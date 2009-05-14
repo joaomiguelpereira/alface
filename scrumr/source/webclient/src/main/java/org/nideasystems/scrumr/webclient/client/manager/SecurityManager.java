@@ -1,6 +1,10 @@
 package org.nideasystems.scrumr.webclient.client.manager;
 
+import org.nideasystems.scrumr.webclient.client.service.AlfrescoUserService;
 import org.nideasystems.scrumr.webclient.client.service.AuthenticationToken;
+
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 
 public class SecurityManager {
 	private static SecurityManager instance = null;
@@ -47,4 +51,19 @@ public class SecurityManager {
 	public Boolean getIsAuthenticated() {
 		return isAuthenticated;
 	}
+
+	public void logout() {
+		
+		//Get ApplicationUserService
+		AlfrescoUserService alfUserService = AlfrescoUserService.getInstance();
+		//Fail safe with this call. It's not important at the serve right now
+		alfUserService.logout();
+		this.isAuthenticated = false;
+		this.authenticationToken = null;
+		//TODO:delete any cookies for this app
+		
+		ClientManager.getInstance().getMainToolbar().updateButtons();
+	}
+
+	
 }
