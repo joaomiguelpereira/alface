@@ -19,7 +19,7 @@ public class TestConfiguration extends TestCase {
 		assertEquals(confA.getDomainName(), "http://localhost");
 		assertEquals(confA.getMajorVersion(), 0);
 		assertEquals(confA.getMinorVersion(), 1);
-		assertEquals(confA.getAuthenticationCookieDefaultMaxAge(), 30);
+		assertEquals(confA.getAuthenticationCookieDefaultMaxAge(), 86400);
 	}
 	
 	@Test
