@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
 import org.nideasystems.scrumr.security.services.BasicSecurityService;
+import org.nideasystems.scrumr.security.services.ISecurityService;
 
 import org.restlet.Component;
 
@@ -20,6 +21,8 @@ public class TestBase extends TestCase{
 	protected IAlfrescoServiceProvider serviceProvider;
 	protected AlfrescoApplication app = null;
 	protected BasicSecurityService securityService = new BasicSecurityService();
+	
+	protected String secret = securityService.getHashFromValue(ISecurityService.SECRET);
 	
 	@Ignore
 	protected void setUp() {
