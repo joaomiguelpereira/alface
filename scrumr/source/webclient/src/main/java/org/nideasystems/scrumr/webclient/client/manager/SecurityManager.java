@@ -58,11 +58,7 @@ public class SecurityManager {
 		AlfrescoUserService alfUserService = AlfrescoUserService.getInstance();
 		//Fail safe with this call. It's not important at the serve right now
 		alfUserService.logout();
-		this.isAuthenticated = false;
-		this.authenticationToken = null;
-		//TODO:delete any cookies for this app
 		
-		ClientManager.getInstance().getMainToolbar().updateButtons();
 	}
 
 	
