@@ -18,6 +18,9 @@ public class AlfrescoServiceProviderConfiguration {
 	private final String PROPS_NAME = "alfresco.properties";
 	private final String ALFRESCO_SERVICE_BASE_URI_KEY = "alfresco.service.base.uri";
 	private final String ALFRESCO_AUTHENTICATION_SERVICE_URI_KEY = "alfresco.authentication.service.uri";
+	
+	
+	
 
 	/** Fields **/
 	private String alfrescoServiceBaseUri = null;

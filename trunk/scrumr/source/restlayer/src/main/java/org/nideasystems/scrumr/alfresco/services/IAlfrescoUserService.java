@@ -6,20 +6,20 @@ import org.restlet.data.Protocol;
 
 public interface IAlfrescoUserService extends IAlfrescoService {
 
-	boolean authenticate(String identifier, String secretAsString) throws AlfrescoUserServiceException;
+	public void authenticate(String identifier, String secretAsString) throws AlfrescoUserServiceException;
 	
 	/**
 	 * Delete a given Authorization ticket in alfresco
 	 * @param ticket The ticket to destroy
 	 */
-	public void deleteAuthenticationTicket(String ticket);
+	public void deleteAuthenticationTicket(String ticket) throws AlfrescoUserServiceException;
 
 	/**
 	 * Validates a ticket with Alfresco
 	 * @param ticket The ticket to validate
 	 * @return true if the ticket is valid. false otherwise
 	 */
-	public boolean isTicketValid(String ticket);
+	public void isTicketValid(String ticket) throws AlfrescoUserServiceException;
 
 	/**
 	 * Get the last valid ticket retrieved from Alfresco within this thread
