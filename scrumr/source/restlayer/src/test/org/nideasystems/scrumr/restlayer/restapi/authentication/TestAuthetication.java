@@ -329,7 +329,7 @@ public class TestAuthetication extends TestBase {
 
 		Response res = client.handle(request);
 		Assert.assertNotNull(res);
-		Assert.assertEquals(Status.CLIENT_ERROR_FORBIDDEN, res.getStatus());
+		Assert.assertEquals(Status.SERVER_ERROR_INTERNAL, res.getStatus());
 	}
 
 	@Test
