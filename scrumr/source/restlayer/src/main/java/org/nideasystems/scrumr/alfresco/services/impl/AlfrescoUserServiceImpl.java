@@ -7,6 +7,7 @@ import org.json.JSONTokener;
 import org.nideasystems.scrumr.alfresco.application.AlfrescoServiceProviderConfiguration;
 import org.nideasystems.scrumr.alfresco.services.AbstractAlfrescoService;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
+import org.nideasystems.scrumr.alfresco.services.ServiceException;
 import org.restlet.data.Reference;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -45,17 +46,31 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 	/**
 	 * Delete an authenticationTicke
 	 */
-	public void deleteAuthenticationTicket(String ticket) {
-		// TODO Auto-generated method stub
+	public void deleteAuthenticationTicket(String ticket)
+			throws AlfrescoUserServiceException {
+		// Create a reference to Alfresco Authentication API
+		Reference ref = new Reference(getConfiguration()
+				.getAlfrescoAuthenticationServiceUri()
+				+ "/ticket/" + ticket+"?alf_ticket="+ticket);
+
+		// Call alfresco
+		Response response = client.delete(ref);
+
+		if (!response.getStatus().equals(Status.SUCCESS_OK)) {
+			log.debug("Error. Could not delete ticket: "
+					+ response.getStatus().getDescription());
+			throw new AlfrescoUserServiceException(
+					"Error. Could not delete ticket", response.getStatus());
+		}
 
 	}
 
 	/**
 	 * Check with alfresco server if a given tiket is valid
 	 */
-	public boolean isTicketValid(String ticket) {
-		// TODO Auto-generated method stub
-		return false;
+	public void isTicketValid(String ticket)
+			throws AlfrescoUserServiceException {
+
 	}
 
 	/**
@@ -67,10 +82,8 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 	 *             unreachable
 	 */
 
-	public boolean authenticate(String identifier, String secretAsString)
+	public void authenticate(String identifier, String secretAsString)
 			throws AlfrescoUserServiceException {
-
-		boolean retVal = false;
 
 		// Hold the JSONRepresentation of login credentials
 		JSONObject jsonObject = new JSONObject();
@@ -81,7 +94,7 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			log.fatal("error creating JSON Object", e);
-			throw new AlfrescoUserServiceException(e);
+			throw new AlfrescoUserServiceException("error creating JSON Object");
 		}
 
 		// Create a JSON representation
@@ -95,27 +108,18 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 		Response response = client.post(ref, userCredentials);
 
 		if (response != null) {
-			//for debug purposes
-			dumpResponse(response,log);
-			
+			// for debug purposes
+			dumpResponse(response, log);
+
 			// If Alfresco returned SUCCESS_OK...
 			if (response.getStatus().equals(Status.SUCCESS_OK)) {
-
-				// Update return
-				retVal = true;
-
 				// Set current alfrescoTicket
 				this.alfrescoTicket = getAlfrescoTicketAsString(response);
 
-			} else if (response.getStatus().equals(
-					Status.CLIENT_ERROR_NOT_FOUND)) {
-				// Throw an exception if Alfresco is not found
-				throw new AlfrescoUserServiceException(
-						"Alfresco Service Not found.");
 			} else {
-				log
-						.warn("Could not authenticate a user in Alfresco Server. Returned Status "
-								+ response.getStatus().getName());
+				log.warn("Got a error from alfresco "+response.getStatus().getName());
+				throw new AlfrescoUserServiceException("Alfresco Error.",
+						response.getStatus());
 			}
 		} else {
 			log.warn("Got a null response from POST to Alfresco");
@@ -123,18 +127,18 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 					"The call to Alfresco returned null");
 		}
 
-		return retVal;
 	}
 
 	/**
-	 * From a representation, extract the ticket
-	 * The current contract is:
+	 * From a representation, extract the ticket The current contract is:
 	 * {data:{ticket:ticketvalue}}
+	 * 
 	 * @param response
 	 * @return
-	 * @throws AlfrescoUserServiceException 
+	 * @throws AlfrescoUserServiceException
 	 */
-	private String getAlfrescoTicketAsString(Response response) throws AlfrescoUserServiceException {
+	private String getAlfrescoTicketAsString(Response response)
+			throws AlfrescoUserServiceException {
 		String returnvalue = null;
 		String res = response.getEntityAsText();
 		JSONTokener jsonTokener = new JSONTokener(res);
@@ -144,8 +148,8 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 			JSONObject data = jsonObj.getJSONObject("data");
 			returnvalue = data.getString("ticket");
 		} catch (JSONException e) {
-			log.fatal("error retrieving Ticket Data from Alfresco response",e);
-			throw new AlfrescoUserServiceException(e);
+			log.fatal("error retrieving Ticket Data from Alfresco response", e);
+			throw new AlfrescoUserServiceException("error creating JSON Object");
 		}
 
 		return returnvalue;
@@ -154,6 +158,7 @@ public class AlfrescoUserServiceImpl extends AbstractAlfrescoService implements
 
 	/**
 	 * Getter for Alfresco ticket
+	 * 
 	 * @return
 	 */
 	public String getAlfrescoTicket() {
