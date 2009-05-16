@@ -31,7 +31,7 @@ public class TestAlfrescoUserServiceIntegration extends BaseTestCase{
 			IAlfrescoUserService userService = serviceProvider.getUserService();
 			
 			//Must return true with good credentials
-			assertTrue(userService.authenticate(USER_NAME, USER_PASSWORD));
+			userService.authenticate(USER_NAME, USER_PASSWORD);
 			//The ticket must not be null
 			assertNotNull(userService.getAlfrescoTicket());
 			//Check the length of the ticket. 
@@ -53,21 +53,23 @@ public class TestAlfrescoUserServiceIntegration extends BaseTestCase{
 		this.serviceProvider = new BasicAlfrescoServiceProvider();
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 		this.serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
-		
+		boolean hasException = false;
 				
 		try {
 			IAlfrescoUserService userService = serviceProvider.getUserService();
 			
 			//Must return false
-			assertFalse(userService.authenticate(USER_NAME+"bad", USER_PASSWORD+"bad"));
+			userService.authenticate(USER_NAME+"bad", USER_PASSWORD+"bad");
 		
 			//The ticket must be null
 			assertNull(userService.getAlfrescoTicket());
 			
 		} catch (Throwable e) {
 			e.printStackTrace();
-			fail();
+			hasException = true;
+			
 		}
+		assertTrue(hasException);
 
 	}
 	
@@ -81,20 +83,22 @@ public class TestAlfrescoUserServiceIntegration extends BaseTestCase{
 		this.serviceProvider.setConfiguration(AlfrescoServiceProviderConfiguration.get());
 		this.serviceProvider.setAlfrescoRestClient(AlfrescoRestClient.get());
 		
-				
+		boolean hasException = false;	
 		try {
 			IAlfrescoUserService userService = serviceProvider.getUserService();
 			
 			//Must return false
-			assertFalse(userService.authenticate(null, null));
+			userService.authenticate(null, null);
 		
 			//The ticket must be null
 			assertNull(userService.getAlfrescoTicket());
 			
 		} catch (Throwable e) {
 			e.printStackTrace();
-			fail();
+			hasException = true;
+
 		}
+		assertTrue(hasException);
 
 	}
 }
