@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
+import org.nideasystems.scrumr.alfresco.services.impl.AlfrescoUserServiceException;
 import org.nideasystems.scrumr.common.SharedConstants;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
 import org.nideasystems.scrumr.restlayer.Configuration;
@@ -34,66 +35,58 @@ import org.restlet.resource.ResourceException;
  */
 public class AuthenticationTokenResource extends BaseResource {
 
-	Logger log = Logger.getLogger(AuthenticationTokenResource.class.getName());
+	private Logger log = Logger.getLogger(AuthenticationTokenResource.class.getName());
 
-	AlfrescoApplication app = getAlfrescoApplication();
-	IAlfrescoServiceProvider alfServiceProvider = app.getServerApp()
+	private AlfrescoApplication app = getAlfrescoApplication();
+	private IAlfrescoServiceProvider alfServiceProvider = app.getServerApp()
 			.getServiceProvider(IAlfrescoServiceProvider.class);
-	IBasicSecurityService securityService = app.getServerApp()
+	private IBasicSecurityService securityService = app.getServerApp()
 			.getServiceProvider(ISecurityServiceProvider.class)
 			.getBasicSecurityService();
 
-	IAlfrescoUserService userService = alfServiceProvider.getUserService();
-
+	private IAlfrescoUserService userService = alfServiceProvider.getUserService();
+	private String secret = null;
+	
 	@Override
 	protected void doInit() throws ResourceException {
 
-		
+		//Get the secret
+		secret = (String)getRequestAttributes().get("secret");
+		log.debug("The secret is :"+secret);
 		super.doInit();
 
 	}
 
 	@Delete
 	public Representation delete() {
-		JSONObject returnObject = new JSONObject();
 		
-		//Form form = getRequestEntityAsForm();
-
-		/*String key = form.getValues("key");
-
-		if (key == null
-				|| !key.equals(securityService
-						.getHashFromValue(ISecurityService.SECRET))) {
-			JsonRepresentation representation = new JsonRepresentation("Key is invalid or null");
-			getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
-			return representation;
-		}*/
-		// Does not make much sense, or does?
-		//TODO: Review this security mechanist (get it out of the res*/
-		try {
-			// let's see if we have any cookie sent?
-			Iterator<String> itSent = getRequest().getCookies().getNames()
-					.iterator();
-
-			while (itSent.hasNext()) {
-				log.debug("Cookie Name: " + itSent.next());
+		JsonRepresentation returnRepresentation = null;
+		//Move this code
+		//To logout, the secret is secret+alfrescoicekt_to_delete
+		if (this.secret!= null) {
+			if (!this.secret.startsWith(securityService.getHashFromValue(ISecurityService.SECRET))) {
+				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+				return super.createJSonError("The secret is invalid", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
 			}
-
-			// Remove any cookie
-			String name = securityService
-					.getHashFromValue("AuthenticationCookieSetting");
-			getResponse().getCookieSettings().removeAll(name);
-
-			// Doing nothing here.
-			returnObject.append("status", "ok");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			log.fatal("Error while creating JSON", e);
-			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+		} else {
+			getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+			return super.createJSonError("Did you forgot to send the Secret?", null,Status.CLIENT_ERROR_FORBIDDEN.getName());	
 		}
-
-		Representation rep = new JsonRepresentation(returnObject);
-		return rep;
+		
+		
+		//Now, if I have the secret as secret+alfrescoticket
+		String alfrescoTicket = this.secret.substring(securityService.getHashFromValue(ISecurityService.SECRET).length());
+		
+		//Now call alfresco service
+		try {
+			userService.deleteAuthenticationTicket(alfrescoTicket);
+		} catch (AlfrescoUserServiceException e) {
+			getResponse().setStatus(e.getHttpStatus());
+			returnRepresentation = super.ecapsulateExceptionJson(e);
+			
+		}
+		
+		return new JsonRepresentation("ok");
 	}
 
 	/**
@@ -104,6 +97,17 @@ public class AuthenticationTokenResource extends BaseResource {
 	 */
 	@Post("json")
 	public Representation authenticate() {
+		
+		//check the presence of the secret
+		if (this.secret != null) {
+			if ( !secret.equals(securityService.getHashFromValue(ISecurityService.SECRET)) ) {				
+				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+				return super.createJSonError("The secret is invalid", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
+			}
+		} else {
+			getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+			return super.createJSonError("Did you forgot to send the Secret?", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
+		}
 		String username = null;
 		String password = null;
 		//String key = null;
@@ -118,19 +122,7 @@ public class AuthenticationTokenResource extends BaseResource {
 		password = form.getValues("username");
 		username = form.getValues("password");
 
-		/*// TODO: Refactor
-		// use a HASH to reinfornce security here. Only client calls with the
-		// correct key are allowed.
-		// for now a has is sufficient
-		key = form.getValues("key");
-
-		if (key == null
-				|| !key.equals(securityService
-						.getHashFromValue(ISecurityService.SECRET))) {
-			representation = new JsonRepresentation("Key is invalid or null");
-			getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
-			return representation;
-		}*/
+		
 
 		try {
 			maxAge = new Integer(form.getValues("maxAge"));
@@ -150,14 +142,18 @@ public class AuthenticationTokenResource extends BaseResource {
 
 		// ICookieManager cookieMgr = app.getCoockieManager();
 
-		boolean authenticated = false;
+		
 
 		try {
 			// Call facade to authenticate the user in Alfresco
-			authenticated = userService.authenticate(username, password);
+			
+			try {
+				userService.authenticate(username, password);
+			} catch (Exception e) {
+				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+				return super.createJSonError("The secret is invalid", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
+			}
 
-			// Set the authentication cookie
-			if (authenticated) {
 
 				// TODO: Move the code that create and set the cookie out out of
 				// the resource represenation creation
@@ -204,17 +200,9 @@ public class AuthenticationTokenResource extends BaseResource {
 
 				getResponse().setStatus(Status.SUCCESS_OK);
 
-			} else {
-				jsonObject.append("error", "Could not authenticate");
-
-				representation = new JsonRepresentation(jsonObject);
-
-				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
-			}
 
 		} catch (Exception e) {
-
-			representation = new JsonRepresentation(ecapsulateExceptionJson(e));
+			representation = ecapsulateExceptionJson(e);
 			getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
 
 		}
