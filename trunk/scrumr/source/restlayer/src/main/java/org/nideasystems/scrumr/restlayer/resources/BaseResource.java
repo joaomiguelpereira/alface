@@ -28,10 +28,10 @@ public abstract class BaseResource extends ServerResource{
 		JSONObject jsonObject = new JSONObject();
 		
 		try {
-			jsonObject.append("errorMsg", message);
-			jsonObject.append("serverDate", new Date());
-			jsonObject.append("status", status);
-			jsonObject.append("details", details);
+			jsonObject.accumulate("errorMsg", message);
+			jsonObject.accumulate("serverDate", new Date());
+			jsonObject.accumulate("status", status);
+			jsonObject.accumulate("details", details);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
