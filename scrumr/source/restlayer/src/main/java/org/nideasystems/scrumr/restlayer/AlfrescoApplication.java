@@ -104,7 +104,7 @@ public class AlfrescoApplication extends Application {
 //				AuthenticationTokenResource.class);
 
 
-		authenticationRouter.attach("/user/authenticationToken/{token}",
+		authenticationRouter.attach("/user/authenticationToken/{secret}",
 				AuthenticationTokenResource.class);
 
 		
