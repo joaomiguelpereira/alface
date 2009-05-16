@@ -18,6 +18,13 @@ public class AlfrescoRestClient implements IAlfrescoRestClient {
 		return client.post(reference, representation);
 		
 	}
+	
+	public Response delete(Reference reference) {
+		return client.delete(reference);
+		
+		
+	}
+
 
 	/**Return a instance of an AlfrescoClient*/ 
 	public static IAlfrescoRestClient get() {
