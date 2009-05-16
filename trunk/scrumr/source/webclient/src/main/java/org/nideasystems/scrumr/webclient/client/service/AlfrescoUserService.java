@@ -26,7 +26,7 @@ import com.google.gwt.user.client.Window;
  */
 public class AlfrescoUserService extends AbstractAlfrescoService {
 	private static AlfrescoUserService instance = null;
-
+	private static final String secret = "6a4b76193f7271638030d16f55bb8d57";
 	private AlfrescoUserService() {
 
 	}
@@ -59,7 +59,7 @@ public class AlfrescoUserService extends AbstractAlfrescoService {
 
 		// Let the connector send the request and we handle the response
 		Reference resourceRef = new Reference(SERVICE_URL
-				+ AUTHENTICATION_TOKEN_PATH);
+				+ AUTHENTICATION_TOKEN_PATH + "/"+secret);
 
 		try {
 			client.post(resourceRef, repEnt, new LoginCallBack());
@@ -76,50 +76,39 @@ public class AlfrescoUserService extends AbstractAlfrescoService {
 		public void onEvent(Request request, Response response) {
 
 			AuthenticationToken token = null;
-			if (response != null) {
-				// Check status
-				Status status = null;
-				if ((status = response.getStatus()) != null) {
-					if (status.equals(Status.SUCCESS_OK)) {
-						Window.alert("Auth OK");
+			
+			// Check if response is error
+			if (response == null) {
+				ClientManager.getInstance().handleError("Response was null");
+			} else if (!response.getStatus().equals(Status.SUCCESS_OK)) {
+				// handle error
+				ClientManager.getInstance().handleError(response);
+			} else {
+				// Handle the authentication
+				if (response.getEntity() != null) {
+					token = getAuthenticationTokenFromEntity(response
+							.getEntityAsJson());
+					SecurityManager.getInstance().authenticate(token);
+					ClientManager.getInstance().updateUserStatus();
+					ClientManager.getInstance().closeLoginWindow();
 
-						// Handle the authentication
-						if (response.getEntity() != null) {
-							token = getAuthenticationTokenFromEntity(response
-									.getEntityAsJson());
-							SecurityManager.getInstance().authenticate(token);
-							ClientManager.getInstance().updateUserStatus();
-							ClientManager.getInstance().closeLoginWindow();
-							
-							// Check cookies
-							if (token.getClientAcceptCookies()) {
-								// Assiming only one cookie
-								CookieSetting authCookie = response
-										.getCookieSettings().get(0);
-								if ( authCookie!= null) {
-									Window.alert(authCookie.getDomain());
-									Window.alert(authCookie.getName());
-									Window.alert(authCookie.getPath());
-									Window.alert(authCookie.getValue());
-									//Set the cookie in browser?
-									
-									
-								}
+					// Check cookies
+					if (token.getClientAcceptCookies()) {
+						// Assiming only one cookie
+						CookieSetting authCookie = response.getCookieSettings()
+								.get(0);
+						if (authCookie != null) {
+							//Window.alert(authCookie.getDomain());
+							//Window.alert(authCookie.getName());
+							//Window.alert(authCookie.getPath());
+							//Window.alert(authCookie.getValue());
+							// Set the cookie in browser?
 
-							}
-
-							Window.alert(response.getEntity().getText());
 						}
-					} else {
-						Window.alert("Error:");
 					}
-				} else {
-					Window
-							.alert("Error calling server Response Entity not found");
+
 				}
 
-			} else {
-				Window.alert("Error calling server. Null response");
 			}
 
 		}
@@ -151,26 +140,37 @@ public class AlfrescoUserService extends AbstractAlfrescoService {
 	}
 
 	public void logout() {
-		//Create a client connector
+		// Create a client connector
 		Client client = new Client(Protocol.HTTP);
-		
+
 		// Let Resource Reference for the object to delete
 		Reference resourceRef = new Reference(SERVICE_URL
-				+ AUTHENTICATION_TOKEN_PATH);
-		//send a DELETE for resourec AuthenticationToken
+				+ AUTHENTICATION_TOKEN_PATH+"/"+secret+SecurityManager.getInstance().getAuthenticationToken().getAlfrescoTicket());
+		// send a DELETE for resourec AuthenticationToken
 		client.delete(resourceRef, new LogoutCallBack());
 
-		
-		
-		
-		
 	}
+
 	private class LogoutCallBack implements Callback {
 
-		public void onEvent(Request request, Response response) {
-			//nothing to do here?
-			
+		public void onEvent(Request request, Response response) {			
+			if (response == null) {
+				ClientManager.getInstance().handleError("Response was null");
+			} else if (!response.getStatus().equals(Status.SUCCESS_OK)) {
+				// handle error
+				ClientManager.getInstance().handleError(response);
+			}  else {
+				
+				//remove any session data in client
+				//TODO:delete any cookies for this app
+				SecurityManager.getInstance().setIsAuthenticated(false);
+				SecurityManager.getInstance().setAuthenticationToken(null);
+				
+				ClientManager.getInstance().getMainToolbar().updateButtons();
+
+			}
+
 		}
-		
+
 	}
 }
