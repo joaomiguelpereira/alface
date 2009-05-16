@@ -49,7 +49,7 @@ public class TestAlfrescoUserService extends BaseTestCase {
 		try {
 			IAlfrescoUserService userService = serviceProvider.getUserService();
 			
-			assertTrue(userService.authenticate(USER_NAME, USER_PASSWORD));
+			userService.authenticate(USER_NAME, USER_PASSWORD);
 			assertNotNull(userService.getAlfrescoTicket());
 			assertEquals(userService.getAlfrescoTicket(), "TICKET_f52e7566416a1922b06630fc63199ca81edfe051");
 			
@@ -89,7 +89,7 @@ public class TestAlfrescoUserService extends BaseTestCase {
 		try {
 			IAlfrescoUserService userService = serviceProvider.getUserService();
 			
-			assertTrue(userService.authenticate(USER_NAME, USER_PASSWORD));
+			userService.authenticate(USER_NAME, USER_PASSWORD);
 			
 		} catch (Throwable e) {
 			e.printStackTrace();
