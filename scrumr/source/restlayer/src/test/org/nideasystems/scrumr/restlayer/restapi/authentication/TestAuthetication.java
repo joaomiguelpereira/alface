@@ -33,6 +33,8 @@ import org.restlet.representation.Representation;
 public class TestAuthetication extends TestBase {
 
 	private static final String authenticationTokenPath = "user/authenticationToken";
+	private String alfrescoAuthenticationToken;
+	
 
 	private CookieSetting createDummyCookie() {
 		JSONObject jsonObject = new JSONObject();
@@ -70,20 +72,16 @@ public class TestAuthetication extends TestBase {
 
 	}
 
+	@Test
 	public void testLogoutOk() {
+		testAuthorizationOk();
 		// As a User I want to logout, destroying all my session data
 		Request request = new Request(Method.DELETE, super.serviceUrl
-				+ authenticationTokenPath+"/"+"alfreco ticket");
+				+ authenticationTokenPath+"/"+secret+this.alfrescoAuthenticationToken);
 
 		
 		// Create a client connector
 		Client client = new Client(Protocol.HTTP);
-
-		//I have to send the server the Alfresco ticket at least
-		//Form form = new Form();
-		//form.add(SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET,"tiketc");
-		//form.add("key", securityService.getHashFromValue(ISecurityService.SECRET));
-		//request.setEntity(form.getWebRepresentation());
 		
 		// Create a dummy authentication token cookie
 		CookieSetting cookie = null;
@@ -104,6 +102,7 @@ public class TestAuthetication extends TestBase {
 	// Assert.assertEquals(Status.CLIENT_ERROR_UNAUTHORIZED, res.getStatus());
 	// }
 
+	
 	@Test
 	public void testAuthorizationOk() {
 
@@ -120,8 +119,10 @@ public class TestAuthetication extends TestBase {
 		// Representation of the ticket
 
 		// Prepare the request
+		
+		
 		Request request = new Request(Method.POST, super.serviceUrl
-				+ authenticationTokenPath+"/teste");
+				+ authenticationTokenPath+"/"+secret);
 
 		// Create the form
 		Form loginForm = new Form();
@@ -167,6 +168,11 @@ public class TestAuthetication extends TestBase {
 			assertNotNull(jsonObj
 					.getString(SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE));
 
+			
+			//Get the authentication Token
+			alfrescoAuthenticationToken = jsonObj.getJSONArray((SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET)).getString(0);
+			
+			
 			boolean acceptCoockie = ((JSONArray) jsonObj
 					.get(SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE))
 					.getBoolean(0);
@@ -268,7 +274,7 @@ public class TestAuthetication extends TestBase {
 
 		// Prepare the request
 		Request request = new Request(Method.POST, super.serviceUrl
-				+ authenticationTokenPath+"/teste");
+				+ authenticationTokenPath+"/"+secret);
 
 		// Add client authnetication
 		// ChallengeScheme challengeSchema = ChallengeScheme.HTTP_COOKIE;
@@ -296,7 +302,7 @@ public class TestAuthetication extends TestBase {
 			JSONObject jsonO = rep.getJsonObject();
 
 			// TODO: Define error messages in JSON Format
-			assertNotNull(jsonO.get("error"));
+			assertNotNull(jsonO.get("errorMsg"));
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -312,7 +318,7 @@ public class TestAuthetication extends TestBase {
 
 		// Prepare the request
 		Request request = new Request(Method.POST, super.serviceUrl
-				+ authenticationTokenPath+"/teste");
+				+ authenticationTokenPath+"/"+secret);
 
 		// Add client authnetication
 		// ChallengeScheme challengeSchema = ChallengeScheme.HTTP_COOKIE;
@@ -326,6 +332,27 @@ public class TestAuthetication extends TestBase {
 		Assert.assertEquals(Status.CLIENT_ERROR_FORBIDDEN, res.getStatus());
 	}
 
+	@Test
+	public void testAuthorizationFailBadKeyProvided() {
+
+		// Prepare the request
+		Request request = new Request(Method.POST, super.serviceUrl
+				+ authenticationTokenPath+"/"+secret+"bad");
+
+		// Add client authnetication
+		// ChallengeScheme challengeSchema = ChallengeScheme.HTTP_COOKIE;
+
+		// ChallengeResponse challengeResponse = new ChallengeResponse();
+
+		Client client = new Client(Protocol.HTTP);
+
+		Response res = client.handle(request);
+		Assert.assertNotNull(res);
+		Assert.assertEquals(Status.CLIENT_ERROR_FORBIDDEN, res.getStatus());
+	}
+
+	
+	
 	@Before
 	public void tearUp() {
 		super.setUp();
