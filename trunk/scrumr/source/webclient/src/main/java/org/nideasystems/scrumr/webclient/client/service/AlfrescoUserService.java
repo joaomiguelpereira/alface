@@ -86,8 +86,10 @@ public class AlfrescoUserService extends AbstractAlfrescoService {
 			} else {
 				// Handle the authentication
 				if (response.getEntity() != null) {
+					
 					token = getAuthenticationTokenFromEntity(response
 							.getEntityAsJson());
+					
 					SecurityManager.getInstance().authenticate(token);
 					ClientManager.getInstance().updateUserStatus();
 					ClientManager.getInstance().closeLoginWindow();
@@ -120,17 +122,14 @@ public class AlfrescoUserService extends AbstractAlfrescoService {
 			JSONValue value = entity.getValue();
 			JSONObject jsonObj = value.isObject();
 
-			String alfTick = jsonObj.get("alfrescoAuthenticationTicket")
-					.isArray().get(0).isString().stringValue();
+			String alfTick = jsonObj.get("alfrescoAuthenticationTicket").isString().stringValue();
+			
 			token.setAlfrescoTicket(alfTick);
 
-			String userName = jsonObj.get("username").isArray().get(0)
-					.isString().stringValue();
-			int maxAgeDays = (int) jsonObj.get("maxAge").isArray().get(0)
-					.isNumber().doubleValue();
-			;
-			boolean clientAcceptCookies = jsonObj.get("acceptCookie").isArray()
-					.get(0).isBoolean().booleanValue();
+			String userName = jsonObj.get("username").isString().stringValue();
+			int maxAgeDays = (int) jsonObj.get("maxAge").isNumber().doubleValue();
+			
+			boolean clientAcceptCookies = jsonObj.get("acceptCookie").isBoolean().booleanValue();
 			token.setClientAcceptCookies(clientAcceptCookies);
 			token.setMaxAgeDays(maxAgeDays);
 			token.setUserName(userName);
