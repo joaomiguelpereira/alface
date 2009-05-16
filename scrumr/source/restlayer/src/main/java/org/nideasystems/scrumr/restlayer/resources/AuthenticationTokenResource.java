@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nideasystems.scrumr.alfresco.application.IAlfrescoServiceProvider;
 import org.nideasystems.scrumr.alfresco.services.IAlfrescoUserService;
+import org.nideasystems.scrumr.alfresco.services.ServiceException;
 import org.nideasystems.scrumr.alfresco.services.impl.AlfrescoUserServiceException;
 import org.nideasystems.scrumr.common.SharedConstants;
 import org.nideasystems.scrumr.restlayer.AlfrescoApplication;
@@ -60,7 +61,7 @@ public class AuthenticationTokenResource extends BaseResource {
 	@Delete
 	public Representation delete() {
 		
-		JsonRepresentation returnRepresentation = null;
+		JsonRepresentation returnRepresentation = new JsonRepresentation("ok");;
 		//Move this code
 		//To logout, the secret is secret+alfrescoicekt_to_delete
 		if (this.secret!= null) {
@@ -86,7 +87,7 @@ public class AuthenticationTokenResource extends BaseResource {
 			
 		}
 		
-		return new JsonRepresentation("ok");
+		return returnRepresentation;
 	}
 
 	/**
@@ -102,6 +103,7 @@ public class AuthenticationTokenResource extends BaseResource {
 		if (this.secret != null) {
 			if ( !secret.equals(securityService.getHashFromValue(ISecurityService.SECRET)) ) {				
 				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+				
 				return super.createJSonError("The secret is invalid", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
 			}
 		} else {
@@ -117,7 +119,9 @@ public class AuthenticationTokenResource extends BaseResource {
 		// seconds
 		boolean addCookie = true; // Default, send also the cookie for client
 		// ---Get the values from the submited form
-		Form form = getRequestEntityAsForm();
+		Form form = getRequest().getEntityAsForm();
+		//Form form = getRequestEntityAsForm();
+		
 
 		password = form.getValues("username");
 		username = form.getValues("password");
@@ -149,9 +153,10 @@ public class AuthenticationTokenResource extends BaseResource {
 			
 			try {
 				userService.authenticate(username, password);
-			} catch (Exception e) {
+			} catch (ServiceException e) {
 				getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
-				return super.createJSonError("The secret is invalid", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
+				return super.ecapsulateExceptionJson(e);
+				//return super.createJSonError("The secret is invalid", null,Status.CLIENT_ERROR_FORBIDDEN.getName());
 			}
 
 
