@@ -168,19 +168,19 @@ public class AuthenticationTokenResource extends BaseResource {
 
 				// TODO: Organize Magic Values
 				jsonObject
-						.append(
+						.accumulate(
 								SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET,
 								userService.getAlfrescoTicket());
-				jsonObject.append(
+				jsonObject.accumulate(
 						SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE,
 						maxAge);
 
-				jsonObject.append(
+				jsonObject.accumulate(
 						SharedConstants.Json.AUTHENTICATION_TOKEN_USERNAME,
 						username);
 
 				jsonObject
-						.append(
+						.accumulate(
 								SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE,
 								addCookie);
 
