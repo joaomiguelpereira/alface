@@ -170,18 +170,14 @@ public class TestAuthetication extends TestBase {
 
 			
 			//Get the authentication Token
-			alfrescoAuthenticationToken = jsonObj.getJSONArray((SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET)).getString(0);
+			alfrescoAuthenticationToken = jsonObj.getString((SharedConstants.Json.AUTHENTICATION_TOKEN_ALFRESCO_TICKET));
 			
 			
-			boolean acceptCoockie = ((JSONArray) jsonObj
-					.get(SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE))
-					.getBoolean(0);
+			boolean acceptCoockie = jsonObj.getBoolean(SharedConstants.Json.AUTHENTICATION_TOKEN_ACCEPT_COOKIE);
 
 			assertEquals(true, acceptCoockie);
 
-			int maxAge = ((JSONArray) jsonObj
-					.get(SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE))
-					.getInt(0);
+			int maxAge = jsonObj.getInt(SharedConstants.Json.AUTHENTICATION_TOKEN_MAX_AGE);
 
 			assertEquals(10, maxAge);
 
