@@ -1,0 +1,1 @@
+integration with alfresco of new custom workflows
